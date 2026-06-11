@@ -18,6 +18,16 @@ module.exports = {
       return message.reply("❌ This user is not muted!");
     }
 
+    // 🔊 DM USER FIRST
+    try {
+      await user.send(
+        `🔊 You have been unmuted from **${message.guild.name}** server`
+      );
+    } catch (err) {
+      console.log("Could not DM user");
+    }
+
+    // 🔓 UNMUTE
     try {
       await user.timeout(null);
       message.reply(`🔊 Successfully unmuted **${user.user.tag}**`);
