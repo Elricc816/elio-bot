@@ -69,7 +69,7 @@ client.once('ready', () => {
   };
 
   updateStatus();
-  setInterval(updateStatus, 10000);
+  setInterval(updateStatus, 5000);
 });
 
 client.on('messageCreate', message => {
@@ -82,7 +82,7 @@ client.on('messageCreate', message => {
   const command = client.commands.get(commandName);
 
   if (!command) {
-    return message.reply("❌ Unknown command. Type !help");
+    return message.reply("❌ Didn't recognize that command. Type !help for list of commands");
   }
 
   try {
