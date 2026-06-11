@@ -88,10 +88,10 @@ client.on('messageCreate', message => {
     const embed = new EmbedBuilder()
         .setTitle('Unknown Command')
         .setDescription(
-            "❌ Didn't recognize that command.\n\nUse `!help` for a list of commands."
+            "<:WarningIcon:1514708751385497721> Didn't recognize that command.\n\nUse `!help` for a list of commands."
         )
         .setColor('#2F3136')
-        .setFooter({ text: 'Elio • Help System' });
+        .setFooter({ text: 'Elio • Created by Erlic' });
 
     return message.reply({ embeds: [embed] });
   }
@@ -99,7 +99,7 @@ client.on('messageCreate', message => {
     command.execute(message, args, client);
   } catch (err) {
     console.log(err);
-    message.reply("❌ Error running command!");
+    message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
 });
 
