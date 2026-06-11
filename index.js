@@ -36,19 +36,19 @@ client.once('ready', () => {
   console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
   const statuses = [
-    'Elric on Top.',
+    'Elric on Top',
     'Nukes? Not Today.',
     'Infinite Galaxies.',
     'Protecting Servers.',
     '!help | Security for Your Server.',
-    'Built Different.',
-    'One Step Ahead.',
+    'Built Different',
+    'One Step Ahead',
     'Powered by Elio Devs </>.',
-    'Keeping Chaos Away.',
-    'Security Never Sleeps.',
-    'Moderating the Multiverse.',
-    'Trust Elio.',
-    'Keeping Servers Safe.',
+    'Keeping Chaos Away',
+    'Security Never Sleeps',
+    'Moderating the Multiverse',
+    'Trust Elio',
+    'Keeping Servers Safe',
     () => `${client.guilds.cache.size} Servers`,
     () => `${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`
   ];
@@ -82,9 +82,19 @@ client.on('messageCreate', message => {
   const command = client.commands.get(commandName);
 
   if (!command) {
-    return message.reply("❌ Didn't recognize that command. Type !help for list of commands");
-  }
 
+    const { EmbedBuilder } = require('discord.js');
+
+    const embed = new EmbedBuilder()
+        .setTitle('Unknown Command')
+        .setDescription(
+            "❌ Didn't recognize that command.\n\nUse `!help` for a list of commands."
+        )
+        .setColor('#2F3136')
+        .setFooter({ text: 'Elio • Help System' });
+
+    return message.reply({ embeds: [embed] });
+  }
   try {
     command.execute(message, args, client);
   } catch (err) {
