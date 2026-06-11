@@ -91,7 +91,7 @@ client.on('messageCreate', message => {
             "<:WarningIcon:1514708751385497721> Didn't recognize that command.\n\nUse `!help` for a list of commands."
         )
         .setColor('#2F3136')
-        .setFooter({ text: 'Elio • Created by Erlic' });
+        .setFooter({ text: 'Elio • Created by Elric' });
 
     return message.reply({ embeds: [embed] });
   }
