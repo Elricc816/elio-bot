@@ -1,19 +1,17 @@
 module.exports = {
   name: "kick",
-  execute(message, args) {
+  async execute(message, args) {
 
-    // Permission check
     if (!message.member.permissions.has("KickMembers")) {
       return message.reply("❌ You don't have permission to kick members!");
     }
 
-    // Get mentioned user
     const user = message.mentions.members.first();
+
     if (!user) {
-      return message.reply("❌ Please mention a user to kick!");
+      return message.reply("❌ Use: `!kick @user [reason]`");
     }
 
-    // Prevent self kick / bot kick
     if (user.id === message.author.id) {
       return message.reply("❌ You can't kick yourself!");
     }
@@ -22,9 +20,31 @@ module.exports = {
       return message.reply("❌ I cannot kick this user!");
     }
 
-    // Kick user
-    user.kick();
+    // optional reason
+    const reason = args.slice(1).join(" ").trim();
 
-    message.reply(`👢 Successfully kicked **${user.user.tag}**`);
+    // DM message (conditional)
+    try {
+      if (reason) {
+        await user.send(
+          `👢 You have been kicked from **${message.guild.name}**\nReason: ${reason}`
+        );
+      } else {
+        await user.send(
+          `👢 You have been kicked from **${message.guild.name}**`
+        );
+      }
+    } catch (err) {
+      console.log("Could not DM user");
+    }
+
+    // kick with or without reason
+    await user.kick(reason || "No reason provided");
+
+    // server message
+    message.reply(
+      `👢 **${user.user.tag}** has been kicked` +
+      (reason ? `\nReason: ${reason}` : "")
+    );
   }
 };
