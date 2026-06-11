@@ -8,10 +8,8 @@ module.exports = {
 
     const user = message.mentions.members.first();
 
-    // Expected format: !mute @user 10m
     const time = args[1];
 
-    // ❌ Wrong format handler
     if (!user || !time) {
       return message.reply(
         "❌ Wrong format!\n" +
@@ -30,7 +28,7 @@ module.exports = {
       return message.reply("❌ I cannot mute this user!");
     }
 
-    // Convert time to milliseconds
+    // convert time
     let duration;
 
     if (time.endsWith("m")) {
@@ -43,17 +41,29 @@ module.exports = {
       duration = parseInt(time) * 24 * 60 * 60 * 1000;
     } 
     else {
-      return message.reply(
-        "❌ Invalid time format!\nUse: `10m`, `1h`, `1d`"
-      );
+      return message.reply("❌ Invalid time format! Use: `10m`, `1h`, `1d`");
     }
 
+    let dmFailed = false;
+
+    // 🔊 DM USER FIRST
+    try {
+      await user.send(
+        `🔇 You have been muted in **${message.guild.name}** for **${time}**`
+      );
+    } catch (err) {
+      dmFailed = true;
+    }
+
+    // mute user
     try {
       await user.timeout(duration, "Muted by Elio bot");
 
       message.reply(
-        `🔇 **${user.user.tag}** muted for **${time}**`
+        `🔇 **${user.user.tag}** muted for **${time}**` +
+        (dmFailed ? "\n⚠️ Could not DM user" : "")
       );
+
     } catch (err) {
       console.log(err);
       message.reply("❌ Failed to mute user");
