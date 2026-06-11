@@ -15,9 +15,31 @@ module.exports = {
       );
     }
 
+    let dmFailed = false;
+    let username = "User";
+
     try {
+      // fetch user for DM
+      const user = await message.client.users.fetch(userId);
+      username = user.tag;
+
+      // DM attempt
+      try {
+        await user.send(
+          `🔓 You have been unbanned from **${message.guild.name}** server`
+        );
+      } catch (err) {
+        dmFailed = true;
+      }
+
+      // unban
       await message.guild.members.unban(userId);
-      message.reply(`✅ Successfully unbanned user ID: **${userId}**`);
+
+      message.reply(
+        `✅ Successfully unbanned **${username}**` +
+        (dmFailed ? "\n⚠️ Could not DM user" : "")
+      );
+
     } catch (err) {
       console.log(err);
       message.reply("❌ Failed to unban user (invalid ID or not banned)");
