@@ -12,7 +12,7 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const prefix = '!';
+const prefix = ',';
 
 // Load all commands from folders
 const foldersPath = path.join(__dirname, 'commands');
