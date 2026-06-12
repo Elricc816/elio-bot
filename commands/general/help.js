@@ -74,22 +74,30 @@ Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
     new StringSelectMenuBuilder()
       .setCustomId('help_menu')
       .setPlaceholder('Select a category')
-      .addOptions(
-        {
-          label: 'Moderation',
-          description: 'View moderation commands',
-          value: 'moderation'
-        },
-        {
-          label: 'Automod',
-          description: 'View automod commands',
-          value: 'automod'
-        },
-        {
-          label: 'Security',
-          description: 'View security commands',
-          value: 'security'
-        }
+      .addOptions({
+  label: 'Security',
+  description: 'View security commands',
+  value: 'security',
+  emoji: {
+    id: '1514699900225323108'
+  }
+},
+{
+  label: 'Automod',
+  description: 'View automod commands',
+  value: 'automod',
+  emoji: {
+    id: '1514699907103985664'
+  }
+},
+{
+  label: 'Moderation',
+  description: 'View moderation commands',
+  value: 'moderation',
+  emoji: {
+    id: '1514699913919991839'
+  }
+}
       )
   );
 
