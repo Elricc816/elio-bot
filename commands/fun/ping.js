@@ -29,7 +29,7 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId('refresh_Ping')
+        .setCustomId('refresh_ping')
         .setLabel('Refresh')
         .setEmoji('<:pin:1514699935264673902>')
         .setStyle(ButtonStyle.Secondary)
