@@ -10,17 +10,17 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor('#d3d3d3')
       .setDescription(
-`### Hey, I'm **Elio**
+`### Hey , I'm **Elio**
 
 <:white_arrow:1514714190231769219> **I'm a powerful Discord bot built for moderation, security, automation, and server management. Keep your community safe, organized, and engaging with a wide range of useful features.**
 
-<a:BlackDot:1514727923175657654> **My prefix for this server is** \`!\`
-<a:BlackDot:1514727923175657654> **Type \`!help [context]\` for more**
-<a:BlackDot:1514727923175657654> **Total commands:** \`${client.commands.size}\`
+<a:BlackDot:1514727923175657654> **Current Prefix:** \`!\`
+<a:BlackDot:1514727923175657654> **Use \`!help <category>\` to view commands.**
 
 **<:rocket:1514699262527541490> Quick Stats -
           <:arrow:1514699753462566953> Heartbeat: ${heartbeat} ms
-          <:arrow:1514699753462566953> API: ${api} ms**
+          <:arrow:1514699753462566953> API: ${api} ms
+          <:arrow:1514699753462566953> Commands: ${client.commands.size}**
 
 > **<:shield:1514699900225323108>  \`»\` Security**
 > **<:admin:1514699907103985664>  \`»\` Automod**
@@ -43,15 +43,17 @@ module.exports = {
 > **<:vip:1514699727072133233>  \`»\` AI**
 > **<:cart:1514699759250575472>  \`»\` Premium**
 
+<:white_arrow:1514714190231769219> Select a category from the dropdown menu below to view available commands.
+
 **<:info:1514699288674828310>  __Pro Tip__**
-Try Elio Premium! <:diamond:1514699495768592635>
+Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
 
 **<:link:1514699706788221120>  __Links__**
 [Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/WJGpbAZRWs) <:devv:1514699301144756234>
 
 -# Developed by <@1306606920836055043> <:dev:1514699929199706143>
 -# <:heartt:1514699719400755432> Thanks For Using Elio!`
-      )
+)
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
       .setImage('https://cdn.discordapp.com/attachments/1514704811394728098/1514922360958881812/file_0000000053d471fa97a1c3a38c25570f.png?ex=6a2d20e4&is=6a2bcf64&hm=3033bdf3f0131eb7b1ece53615f28773b10937cfb762f2d84fc05c781b613f45&')
