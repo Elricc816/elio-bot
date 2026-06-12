@@ -149,7 +149,61 @@ collector.on('collect', async interaction => {
       ephemeral: true
     });
   }
+if (interaction.isStringSelectMenu() && interaction.values[0] === 'security') {
 
+  const securityEmbed = new EmbedBuilder()
+    .setColor('#d3d3d3')
+    .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+    .setTitle('<:shield:1514699900225323108> Security Modules')
+    .setDescription(
+`__**Antinuke**__
+\`,antinuke\`
+\`,antinuke whitelist\`
+\`,antinuke zplus\`
+\`,antinuke betrayalguard\`
+\`,antinuke logdisable\`
+\`,antinuke limit\`
+\`,antinuke disable\`
+\`,antinuke trustlimit\`
+\`,antinuke reset\`
+\`,antinuke wallon\`
+\`,antinuke autorecovery\`
+\`,antinuke enable\`
+\`,antinuke walloff\`
+\`,antinuke manage\`
+\`,antinuke wizard\`
+\`,antinuke logging\`
+
+__**Mainrole**__
+\`,mainrole\`
+\`,mainrole reset\`
+\`,mainrole add\`
+\`,mainrole remove\`
+\`,mainrole show\`
+
+__**Panicmode**__
+\`,panicmode\`
+\`,panicmode disable\`
+\`,panicmode enable\`
+\`,panicmode setup\`
+\`,panicmode reset\`
+\`,panicmode show\`
+
+━━━━━━━━━━━━━━━━━━
+
+Built By Elric </>`
+    )
+    .setFooter({
+      text: `Executed by ${message.author.username}`,
+      iconURL: message.author.displayAvatarURL({ dynamic: true })
+    })
+    .setTimestamp();
+
+  return interaction.reply({
+    embeds: [securityEmbed],
+    ephemeral: true
+  });
+        }
   if (interaction.isStringSelectMenu() && interaction.values[0] === 'moderation') {
 
     const modEmbed = new EmbedBuilder()
