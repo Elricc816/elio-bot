@@ -18,8 +18,8 @@ module.exports = {
 
 <:white_arrow:1514714190231769219> **I'm a powerful Discord bot built for moderation, security, automation, and server management. Keep your community safe, organized, and engaging with a wide range of useful features.**
 
-<a:BlackDot:1514727923175657654> **Current Prefix:** \`!\`
-<a:BlackDot:1514727923175657654> **Use \`!help <category>\` to view commands.**
+<a:BlackDot:1514727923175657654> **Current Prefix:** \`,\`
+<a:BlackDot:1514727923175657654> **Use \`,help <category>\` to view commands.**
 
 **<:rocket:1514699262527541490> Quick Stats -
           <:arrow:1514699753462566953> Heartbeat: ${heartbeat} ms
