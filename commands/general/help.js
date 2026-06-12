@@ -156,43 +156,20 @@ if (interaction.isStringSelectMenu() && interaction.values[0] === 'security') {
     .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
     .setTitle('<:shield:1514699900225323108> Security Modules')
     .setDescription(
-`__**Antinuke**__
-\`,antinuke\`
-\`,antinuke whitelist\`
-\`,antinuke zplus\`
-\`,antinuke betrayalguard\`
-\`,antinuke logdisable\`
-\`,antinuke limit\`
-\`,antinuke disable\`
-\`,antinuke trustlimit\`
-\`,antinuke reset\`
-\`,antinuke wallon\`
-\`,antinuke autorecovery\`
-\`,antinuke enable\`
-\`,antinuke walloff\`
-\`,antinuke manage\`
-\`,antinuke wizard\`
-\`,antinuke logging\`
+`### Security Modules
 
-__**Mainrole**__
-\`,mainrole\`
-\`,mainrole reset\`
-\`,mainrole add\`
-\`,mainrole remove\`
-\`,mainrole show\`
+**__Antinuke__**
+\`antinuke\` , \`antinuke whitelist\` , \`antinuke zplus\` , \`antinuke betrayalguard\` , \`antinuke logdisable\` , \`antinuke limit\` , \`antinuke disable\` , \`antinuke trustlimit\` , \`antinuke reset\` , \`antinuke wallon\` , \`antinuke autorecovery\` , \`antinuke enable\` , \`antinuke walloff\` , \`antinuke manage\` , \`antinuke wizard\` , \`antinuke logging\`
 
-__**Panicmode**__
-\`,panicmode\`
-\`,panicmode disable\`
-\`,panicmode enable\`
-\`,panicmode setup\`
-\`,panicmode reset\`
-\`,panicmode show\`
+**__Mainrole__**
+\`mainrole\` , \`mainrole reset\` , \`mainrole add\` , \`mainrole remove\` , \`mainrole show\`
 
-━━━━━━━━━━━━━━━━━━
+**__Panicmode__**
+\`panicmode\` , \`panicmode disable\` , \`panicmode enable\` , \`panicmode setup\` , \`panicmode reset\` , \`panicmode show\`
 
-Built By Elric </>`
-    )
+-# Powered By Elric`
+)
+    .setColor('#D3D3D3')
     .setFooter({
       text: `Executed by ${message.author.username}`,
       iconURL: message.author.displayAvatarURL({ dynamic: true })
