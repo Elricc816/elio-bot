@@ -18,21 +18,43 @@ module.exports = {
     const sub = args[0]?.toLowerCase();
 
     if (!sub) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor('#d3d3d3')
-            .setTitle('🛡️ Antinuke')
-            .setDescription(
-              '**Available Commands**\n\n' +
-              '`,antinuke enable`\n' +
-              '`,antinuke disable`'
-            )
-            .setFooter({
-              text: 'Built By Elric </>'
-            })
-        ]
-      });
+  return message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setTitle('<:shield:1514699900225323108> Antinuke')
+        .setDescription(
+`<a:MekoLoading:1514728537452708022> **Available Antinuke Commands**
+
+\`,antinuke enable\`
+> Enable antinuke.
+
+\`,antinuke disable\`
+> Disable antinuke.
+
+\`,antinuke logging\`
+> Configure logs.
+
+\`,antinuke whitelist\`
+> Manage whitelist.
+
+\`,antinuke trustlimit\`
+> Configure trusted limits.
+
+\`,antinuke autorecovery\`
+> Configure autorecovery.
+
+\`,antinuke wizard\`
+> Setup wizard.
+
+\`,antinuke reset\`
+> Reset settings.`
+        )
+        .setFooter({
+          text: `Page 1/1 | Requested By ${message.author.username}`
+        })
+    ]
+  });
     }
 
     if (sub === 'enable') {
