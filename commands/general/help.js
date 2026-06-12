@@ -130,5 +130,52 @@ Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
   embeds: [embed],
   components: [row]
 });
+    const collector = msg.createMessageComponentCollector({
+  filter: i => i.customId === 'help_menu',
+  time: 300000
+});
+
+collector.on('collect', async interaction => {
+
+  if (interaction.user.id !== message.author.id) {
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor('#FF7F7F')
+          .setDescription(
+            "<a:spider_cross:1514728338701287640> This help menu isn't yours."
+          )
+      ],
+      ephemeral: true
+    });
+  }
+
+  if (interaction.isStringSelectMenu() && interaction.values[0] === 'moderation') {
+
+    const modEmbed = new EmbedBuilder()
+      .setColor('#d3d3d3')
+      .setTitle('<:mod1:1514699913919991839> Moderation Commands')
+      .setDescription(
+        '` ,ban `\n' +
+        '` ,unban `\n' +
+        '` ,kick `\n' +
+        '` ,mute `\n' +
+        '` ,unmute `\n' +
+        '` ,purge `\n' +
+        '` ,pb `'
+      );
+
+    return interaction.reply({
+      embeds: [modEmbed],
+      ephemeral: true
+    });
+  }
+
+  return interaction.reply({
+    content: 'Category under development.',
+    ephemeral: true
+  });
+
+});
   }
 };
