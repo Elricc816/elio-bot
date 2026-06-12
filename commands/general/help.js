@@ -4,9 +4,34 @@ const {
   StringSelectMenuBuilder
 } = require('discord.js');
 
+const cooldown = new Set();
+
 module.exports = {
   name: "help",
   async execute(message, args, client) {
+
+    if (cooldown.has(message.author.id)) {
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor('#FF7F7F')
+            .setDescription(
+              '<a:clock:1514734530282520647> Please wait **5 seconds** before using this command again.'
+            )
+            .setFooter({
+              text: `Executed by ${message.author.username}`,
+              iconURL: message.author.displayAvatarURL({ dynamic: true })
+            })
+            .setTimestamp()
+        ]
+      });
+    }
+
+    cooldown.add(message.author.id);
+
+    setTimeout(() => {
+      cooldown.delete(message.author.id);
+    }, 5000);
 
     const heartbeat = Date.now() - message.createdTimestamp;
     const api = Math.round(client.ws.ping);
