@@ -13,9 +13,9 @@ module.exports = {
         iconURL: message.client.user.displayAvatarURL()
       })
       .setDescription(
-        `<a:GF_Loading_Google:769532716726747137> Heartbeat: **${heartbeat} ms**\n<:timerr:1514699712681218094> API: **${api} ms**`
+        `<:heartt:1514699719400755432> Heartbeat: **${heartbeat} ms**\n<:timerr:1514699712681218094> API: **${api} ms**`
       )
-      .setColor('#f3ca40')
+      .setColor('#fff18d')
       .setFooter({
         text: 'Cluster: 0 | Shard: 0'
       });
