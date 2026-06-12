@@ -1,4 +1,8 @@
-const { EmbedBuilder } = require('discord.js');
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  StringSelectMenuBuilder
+} = require('discord.js');
 
 module.exports = {
   name: "help",
@@ -65,6 +69,33 @@ Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
 
       .setTimestamp();
 
-    message.reply({ embeds: [embed] });
+    const row = new ActionRowBuilder()
+  .addComponents(
+    new StringSelectMenuBuilder()
+      .setCustomId('help_menu')
+      .setPlaceholder('Select a category')
+      .addOptions(
+        {
+          label: 'Moderation',
+          description: 'View moderation commands',
+          value: 'moderation'
+        },
+        {
+          label: 'Automod',
+          description: 'View automod commands',
+          value: 'automod'
+        },
+        {
+          label: 'Security',
+          description: 'View security commands',
+          value: 'security'
+        }
+      )
+  );
+
+    const msg = await message.reply({
+  embeds: [embed],
+  components: [row]
+});
   }
 };
