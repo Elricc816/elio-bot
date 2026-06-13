@@ -88,7 +88,7 @@ client.on('messageCreate', message => {
     const embed = new EmbedBuilder()
         .setTitle('Unknown Command')
         .setDescription(
-            "<:WarningIcon:1514708751385497721> Didn't recognize that command.\n\nUse `!help` for a list of commands."
+            "<:WarningIcon:1514708751385497721> Didn't recognize that command.\n\nUse `,help` for a list of commands."
         )
         .setColor('#FF5C5C')
         .setFooter({ text: 'Elio • Created by Elric' });
