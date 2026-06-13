@@ -21,23 +21,24 @@ if (cooldown.has(message.author.id)) {
 
   if (timeLeft > 0) {
 
-  const cooldownMsg = await message.reply({
-    embeds: [
-      new EmbedBuilder()
-        .setColor('#FF7F7F')
-        .setDescription(
+    const cooldownMsg = await message.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor('#FF7F7F')
+          .setDescription(
+
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
-<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\``
-        )
-    ]
-  });
+<:arrow:1514699753462566953> Cooldown ~ `${timeLeft}s``
+)
+]
+});
 
-  setTimeout(() => {
-    cooldownMsg.delete().catch(() => {});
-  }, 2000);
+    setTimeout(() => {
+      cooldownMsg.delete().catch(() => {});
+    }, 2000);
 
-  return;
+    return;
   }
 }
 
@@ -54,33 +55,30 @@ const embed = new EmbedBuilder()
 
 `<a:MekoLoading:1514728537452708022> Available Panicmode Commands [6]
 
-\`,panicmode\`
+`,panicmode`
 
-> Configure panicmode settings.
+«Configure panicmode settings.»
 
-\`,panicmode disable\`
+`,panicmode disable`
 
-> Disables the panicmode system.
+«Disables the panicmode system.»
 
-\`,panicmode enable\`
+`,panicmode enable`
 
-> Enables the panicmode system.
+«Enables the panicmode system.»
 
-\`,panicmode reset\`
+`,panicmode reset`
 
-> Resets (deletes) the panicmode configuration. 
+«Resets (deletes) the panicmode configuration.»
 
-\`,panicmode setup\`
+`,panicmode setup`
 
-> Sets up the panicmode system.
+«Sets up the panicmode system.»
 
-\`, panicmode show\`
+`,panicmode show`
 
-> Shows the current panicmode configuration.
-      )
-      .setFooter({
-        text: `Page 1/1 | Requested By ${message.author.username}`
-      });
+«Shows the current panicmode configuration.") .setFooter({ text:"Page 1/1 | Requested By ${message.author.username}`
+});»
 
 const row = new ActionRowBuilder()
   .addComponents(
