@@ -74,6 +74,34 @@ client.once('ready', () => {
 
 client.on('messageCreate', message => {
   if (message.author.bot) return;
+
+  if (
+    message.content === `<@${client.user.id}>` ||
+    message.content === `<@!${client.user.id}>`
+  ) {
+
+    const { EmbedBuilder } = require('discord.js');
+
+    const embed = new EmbedBuilder()
+      .setColor('#D3D3D3')
+      .setTitle('<:bot1:1514699532686852227> | Prefix Info')
+      .setDescription(
+`<:dot:1514706694079254730> **Prefix Help**
+Hey ${message.author}! Here are my current prefixes:
+
+<:dot:1514706694079254730> **Details**
+
+> <:arrow:1514699753462566953> **Global Prefix** : \`,\`
+> <:arrow:1514699753462566953> **Server Prefix** : \`,\`
+
+> ***Tip***: *Use \`,help\` to see all my commands.*`
+      );
+
+    return message.reply({
+      embeds: [embed]
+    });
+  }
+
   if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
