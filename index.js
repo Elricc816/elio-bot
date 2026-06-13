@@ -97,9 +97,15 @@ Hey ${message.author}! Here are my current prefixes:
 > ***Tip***: *Use \`,help\` to see all my commands.*`
       );
 
-    return message.reply({
-      embeds: [embed]
-    });
+    const pingMsg = await message.reply({
+  embeds: [embed]
+});
+
+setTimeout(() => {
+  pingMsg.delete().catch(() => {});
+}, 5000);
+
+return;
   }
 
   if (!message.content.startsWith(prefix)) return;
