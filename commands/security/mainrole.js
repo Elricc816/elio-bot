@@ -25,10 +25,9 @@ if (cooldown.has(message.author.id)) {
         new EmbedBuilder()
           .setColor('#FF7F7F')
           .setDescription(
-
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
-<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\`
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\``
 )
 ]
 });
@@ -50,19 +49,19 @@ const embed = new EmbedBuilder()
 
 \`,mainrole\`
 
-«Configure mainrole settings.»
+> Configure mainrole settings.
 
 \`,mainrole add\`
 
-«Add a role to mainrole.»
+> Add a role to mainrole.
 
 \`,mainrole remove\`
 
-«Remove a role from mainrole.»
+> Remove a role from mainrole.
 
 \`,mainrole reset\`
 
-«Reset all mainrole settings.»
+> Reset all mainrole settings.
 
 \`,mainrole show\`
 
