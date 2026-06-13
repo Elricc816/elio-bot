@@ -1,3 +1,4 @@
+const db = require('../../database');
 const {
   EmbedBuilder,
   ActionRowBuilder,
@@ -9,8 +10,8 @@ const cooldown = new Map();
 module.exports = {
   name: "antinuke",
 
-  async execute(message) {
-
+  async execute(message, args) {
+    
     const cooldownTime = 3000;
 
     if (cooldown.has(message.author.id)) {
@@ -45,6 +46,39 @@ module.exports = {
     setTimeout(() => {
       cooldown.delete(message.author.id);
     }, cooldownTime);
+    const sub = args[0]?.toLowerCase();
+
+if (sub === 'enable') {
+
+  await db.set(`antinuke_${message.guild.id}`, true);
+
+  return message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#57F287')
+        .setDescription(
+          '<:shield:1514705361935012081> Antinuke has been enabled successfully.'
+        )
+    ]
+  });
+
+}
+
+if (sub === 'disable') {
+
+  await db.set(`antinuke_${message.guild.id}`, false);
+
+  return message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#FF7F7F')
+        .setDescription(
+          '<a:spider_cross:1514728338701287640> Antinuke has been disabled.'
+        )
+    ]
+  });
+
+}
 
     const pages = [
 
