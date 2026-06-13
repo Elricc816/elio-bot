@@ -19,7 +19,7 @@ if (cooldown.has(message.author.id)) {
     (cooldown.get(message.author.id) - Date.now()) / 1000
   ).toFixed(1);
 
-  if Number(timeLeft) > 0) {
+  if (timeLeft > 0) {
 
     const cooldownMsg = await message.reply({
       embeds: [
