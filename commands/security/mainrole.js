@@ -28,7 +28,7 @@ if (cooldown.has(message.author.id)) {
 
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
-<:arrow:1514699753462566953> Cooldown ~ `${timeLeft}s``
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\`
 )
 ]
 });
@@ -48,26 +48,29 @@ const embed = new EmbedBuilder()
 
 `<a:MekoLoading:1514728537452708022> Available Mainrole Commands [5]
 
-`,mainrole`
+\`,mainrole\`
 
 «Configure mainrole settings.»
 
-`,mainrole add`
+\`,mainrole add\`
 
 «Add a role to mainrole.»
 
-`,mainrole remove`
+\`,mainrole remove\`
 
 «Remove a role from mainrole.»
 
-`,mainrole reset`
+\`,mainrole reset\`
 
 «Reset all mainrole settings.»
 
-`,mainrole show`
+\`,mainrole show\`
 
-«View current mainrole configuration.") .setFooter({ text:"Page 1/1 | Requested By ${message.author.username}`
-});»
+> View current mainrole configuration.`
+      )
+      .setFooter({
+        text: `Page 1/1 | Requested By ${message.author.username}`
+      });
 
 const row = new ActionRowBuilder()
   .addComponents(
