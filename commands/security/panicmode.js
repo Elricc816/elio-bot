@@ -29,7 +29,7 @@ if (cooldown.has(message.author.id)) {
 
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
-<:arrow:1514699753462566953> Cooldown ~ `${timeLeft}s``
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\`
 )
 ]
 });
@@ -51,34 +51,36 @@ setTimeout(() => {
 const embed = new EmbedBuilder()
   .setColor('#D3D3D3')
   .setTitle('<:adminn:1514699506535497829> Panicmode')
-  .setDescription(
-
+   .setDescription(
 `<a:MekoLoading:1514728537452708022> Available Panicmode Commands [6]
 
-`,panicmode`
+\`,panicmode\`
 
-«Configure panicmode settings.»
+> Configure panicmode settings.
 
-`,panicmode disable`
+\`,panicmode disable\`
 
-«Disables the panicmode system.»
+> Disables the panicmode system.
 
-`,panicmode enable`
+\`,panicmode enable\`
 
-«Enables the panicmode system.»
+> Enables the panicmode system.
 
-`,panicmode reset`
+\`,panicmode reset\`
 
-«Resets (deletes) the panicmode configuration.»
+> Resets (deletes) the panicmode configuration.
 
-`,panicmode setup`
+\`,panicmode setup\`
 
-«Sets up the panicmode system.»
+> Sets up the panicmode system.
 
-`,panicmode show`
+\`,panicmode show\`
 
-«Shows the current panicmode configuration.") .setFooter({ text:"Page 1/1 | Requested By ${message.author.username}`
-});»
+> Shows the current panicmode configuration.`
+)
+        .setFooter({
+  text: `Page 1/1 | Requested By ${message.author.username}`
+});
 
 const row = new ActionRowBuilder()
   .addComponents(
