@@ -15,24 +15,27 @@ module.exports = {
       new EmbedBuilder()
         .setColor('#D3D3D3')
         .setTitle('<:shield:1514699900225323108> Antinuke')
-        .setDescription(
-`.antinuke autorecovery
+.setDescription(
+`<a:MekoLoading:1514728537452708022> **Available Antinuke Commands [15]**
+
+,antinuke autorecovery
 > Manage server autorecovery settings.
 
-.antinuke betrayalguard
+,antinuke betrayalguard
 > Enable or disable betrayal guard for whitelisted users.
 
-.antinuke disable
+,antinuke disable
 > Disable antinuke on the server.
 
-.antinuke enable
+,antinuke enable
 > Enable and configure antinuke on the server.
 
-.antinuke limit
+,antinuke limit
 > Set limits and heat for antinuke filters.
 
-.antinuke logdisable
+,antinuke logdisable
 > Disable antinuke logging.`
+)
         )
         .setFooter({
           text: `Page 1/3 | Requested By ${message.author.username}`
@@ -42,25 +45,25 @@ module.exports = {
         .setColor('#D3D3D3')
         .setTitle('<:shield:1514699900225323108> Antinuke')
         .setDescription(
-`.antinuke logging
+`,antinuke logging
 > Set the channel for antinuke logs.
 
-.antinuke manage
+,antinuke manage
 > Manage all antinuke settings.
 
-.antinuke reset
+,antinuke reset
 > Reset all antinuke data for the server.
 
-.antinuke trustlimit
+,antinuke trustlimit
 > Set limits for extraowners and whitelisted users.
 
-.antinuke walloff
+,antinuke walloff
 > Disable wall role protection.
 
-.antinuke wallon
+,antinuke wallon
 > Enable wall role protection.
 
-.antinuke whitelist
+,antinuke whitelist
 > Manage antinuke whitelist.`
         )
         .setFooter({
@@ -71,10 +74,10 @@ module.exports = {
         .setColor('#D3D3D3')
         .setTitle('<:shield:1514699900225323108> Antinuke')
         .setDescription(
-`.antinuke wizard
+`,antinuke wizard
 > One-click setup for antinuke.
 
-.antinuke zplus
+,antinuke zplus
 > Configure advanced Z+ protection.`
         )
         .setFooter({
