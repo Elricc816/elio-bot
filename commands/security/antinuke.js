@@ -5,10 +5,46 @@ const {
   ButtonStyle
 } = require('discord.js');
 
+const cooldown = new Map();
 module.exports = {
   name: "antinuke",
 
   async execute(message) {
+
+    const cooldownTime = 3000;
+
+    if (cooldown.has(message.author.id)) {
+      const timeLeft = (
+        (cooldown.get(message.author.id) - Date.now()) / 1000
+      ).toFixed(1);
+
+      if (timeLeft > 0) {
+
+        const cooldownMsg = await message.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setColor('#FF7F7F')
+              .setDescription(
+`<:WarningIcon:1514708751385497721> You are under cooldown to this command!
+
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\``
+              )
+          ]
+        });
+
+        setTimeout(() => {
+          cooldownMsg.delete().catch(() => {});
+        }, 2000);
+
+        return;
+      }
+    }
+
+    cooldown.set(message.author.id, Date.now() + cooldownTime);
+
+    setTimeout(() => {
+      cooldown.delete(message.author.id);
+    }, cooldownTime);
 
     const pages = [
 
