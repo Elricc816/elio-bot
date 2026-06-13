@@ -36,7 +36,7 @@ module.exports = {
 ,antinuke logdisable
 > Disable antinuke logging.`
 )
-        )
+        
         .setFooter({
           text: `Page 1/3 | Requested By ${message.author.username}`
         }),
