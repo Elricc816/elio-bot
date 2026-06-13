@@ -136,13 +136,13 @@ Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
   ]
 });
 
-setTimeout(async () => {
-  await loadingMsg.edit({
-    embeds: [embed],
-    components: [row]
-  });
-}, 1500);
-    const collector = msg.createMessageComponentCollector({
+await new Promise(resolve => setTimeout(resolve, 1000));
+
+await loadingMsg.edit({
+  embeds: [embed],
+  components: [row]
+});
+    const collector = loadingMsg.createMessageComponentCollector({
   filter: i => i.customId === 'help_menu',
   time: 300000
 });
