@@ -11,20 +11,24 @@ module.exports = {
   async execute(message, args, client) {
 
     if (cooldown.has(message.author.id)) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor('#FF7F7F')
-            .setDescription(
-              '<a:clock:1514734530282520647> Please wait **5 seconds** before using this command again.'
-            )
-            .setFooter({
-              text: `Executed by ${message.author.username}`,
-              iconURL: message.author.displayAvatarURL({ dynamic: true })
-            })
-            .setTimestamp()
-        ]
-      });
+
+  const cooldownMsg = await message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#FF7F7F')
+        .setDescription(
+`<:WarningIcon:1514708751385497721> You are under cooldown to this command!
+
+<:arrow:1514699753462566953> Cooldown ~ \`5s\``
+        )
+    ]
+  });
+
+  setTimeout(() => {
+    cooldownMsg.delete().catch(() => {});
+  }, 2000);
+
+  return;
     }
 
     cooldown.add(message.author.id);
