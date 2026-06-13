@@ -35,10 +35,7 @@ if (cooldown.has(message.author.id)) {
 }
 }
 
-cooldown.set(
-  message.author.id,
-  Date.now() + cooldownTime
-);
+cooldown.set(message.author.id, Date.now() + cooldownTime);
 
 setTimeout(() => {
   cooldown.delete(message.author.id);
