@@ -15,7 +15,6 @@ async execute(message) {
 const cooldownTime = 3000;
 
 if (cooldown.has(message.author.id)) {
-
   const timeLeft = (
     (cooldown.get(message.author.id) - Date.now()) / 1000
   ).toFixed(1);
