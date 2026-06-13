@@ -126,10 +126,22 @@ Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
       )
   );
 
-    const msg = await message.reply({
-  embeds: [embed],
-  components: [row]
+    const loadingMsg = await message.reply({
+  embeds: [
+    new EmbedBuilder()
+      .setColor('#D3D3D3')
+      .setDescription(
+        '<a:clockk:1514734530282520647> **Just A Moment.**'
+      )
+  ]
 });
+
+setTimeout(async () => {
+  await loadingMsg.edit({
+    embeds: [embed],
+    components: [row]
+  });
+}, 1500);
     const collector = msg.createMessageComponentCollector({
   filter: i => i.customId === 'help_menu',
   time: 300000
