@@ -19,17 +19,16 @@ if (cooldown.has(message.author.id)) {
     (cooldown.get(message.author.id) - Date.now()) / 1000
   ).toFixed(1);
 
-  if (timeLeft > 0) {
+  if Number(timeLeft) > 0) {
 
     const cooldownMsg = await message.reply({
       embeds: [
         new EmbedBuilder()
           .setColor('#FF7F7F')
           .setDescription(
-
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
-<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\`
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\``
 )
 ]
 });
