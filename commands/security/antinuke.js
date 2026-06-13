@@ -1,88 +1,166 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const {
+EmbedBuilder,
+ActionRowBuilder,
+ButtonBuilder,
+ButtonStyle
+} = require('discord.js');
 
 module.exports = {
-  name: "antinuke",
+name: "antinuke",
 
-  async execute(message, args) {
+async execute(message) {
 
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor('#FF7F7F')
-            .setDescription('❌ You need Administrator permission to use this command.')
-        ]
-      });
-    }
+const pages = [
 
-    const sub = args[0]?.toLowerCase();
+  new EmbedBuilder()
+    .setColor('#D3D3D3')
+    .setTitle('<:shield:1514699900225323108> Antinuke')
+    .setDescription(
 
-    if (!sub) {
-  return message.reply({
-    embeds: [
-      new EmbedBuilder()
-        .setColor('#D3D3D3')
-        .setTitle('<:shield:1514699900225323108> Antinuke')
-        .setDescription(
-`<a:MekoLoading:1514728537452708022> **Available Antinuke Commands**
+`.antinuke autorecovery
 
-\`,antinuke enable\`
-> Enable antinuke.
+«Manage server autorecovery settings.»
 
-\`,antinuke disable\`
-> Disable antinuke.
+.antinuke betrayalguard
 
-\`,antinuke logging\`
-> Configure logs.
+«Enable or disable betrayal guard for whitelisted users.»
 
-\`,antinuke whitelist\`
-> Manage whitelist.
+.antinuke disable
 
-\`,antinuke trustlimit\`
-> Configure trusted limits.
+«Disable antinuke on the server.»
 
-\`,antinuke autorecovery\`
-> Configure autorecovery.
+.antinuke enable
 
-\`,antinuke wizard\`
-> Setup wizard.
+«Enable and configure antinuke on the server.»
 
-\`,antinuke reset\`
-> Reset settings.`
-        )
-        .setFooter({
-          text: `Page 1/1 | Requested By ${message.author.username}`
-        })
-    ]
-  });
-    }
+.antinuke limit
 
-    if (sub === 'enable') {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor('#57F287')
-            .setDescription('✅ Antinuke has been enabled.')
-        ]
-      });
-    }
+«Set limits and heat for antinuke filters.»
 
-    if (sub === 'disable') {
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor('#ED4245')
-            .setDescription('❌ Antinuke has been disabled.')
-        ]
-      });
-    }
+.antinuke logdisable
 
-    return message.reply({
+«Disable antinuke logging.") .setFooter({ text:"Page 1/3 | Requested By ${message.author.username}`
+}),»
+
+  new EmbedBuilder()
+    .setColor('#D3D3D3')
+    .setTitle('<:shield:1514699900225323108> Antinuke')
+    .setDescription(
+
+`.antinuke logging
+
+«Set the channel for antinuke logs.»
+
+.antinuke manage
+
+«Manage all antinuke settings.»
+
+.antinuke reset
+
+«Reset all antinuke data for the server.»
+
+.antinuke trustlimit
+
+«Set limits for extraowners and whitelisted users.»
+
+.antinuke walloff
+
+«Disable wall role protection.»
+
+.antinuke wallon
+
+«Enable wall role protection.»
+
+.antinuke whitelist
+
+«Manage antinuke whitelist.") .setFooter({ text:"Page 2/3 | Requested By ${message.author.username}`
+}),»
+
+  new EmbedBuilder()
+    .setColor('#D3D3D3')
+    .setTitle('<:shield:1514699900225323108> Antinuke')
+    .setDescription(
+
+`.antinuke wizard
+
+«One-click setup for antinuke.»
+
+.antinuke zplus
+
+«Configure advanced Z+ protection.") .setFooter({ text:"Page 3/3 | Requested By ${message.author.username}`
+})»
+
+];
+
+let page = 0;
+
+const row = new ActionRowBuilder()
+  .addComponents(
+    new ButtonBuilder()
+      .setCustomId('first')
+      .setEmoji('⏪')
+      .setStyle(ButtonStyle.Secondary),
+
+    new ButtonBuilder()
+      .setCustomId('previous')
+      .setEmoji('◀️')
+      .setStyle(ButtonStyle.Secondary),
+
+    new ButtonBuilder()
+      .setCustomId('delete')
+      .setEmoji('🗑️')
+      .setStyle(ButtonStyle.Danger),
+
+    new ButtonBuilder()
+      .setCustomId('next')
+      .setEmoji('▶️')
+      .setStyle(ButtonStyle.Secondary),
+
+    new ButtonBuilder()
+      .setCustomId('last')
+      .setEmoji('⏩')
+      .setStyle(ButtonStyle.Secondary)
+  );
+
+const msg = await message.reply({
+  embeds: [pages[page]],
+  components: [row]
+});
+
+const collector = msg.createMessageComponentCollector({
+  time: 300000
+});
+
+collector.on('collect', async interaction => {
+
+  if (interaction.user.id !== message.author.id) {
+    return interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor('#FF7F7F')
-          .setDescription('❌ Unknown subcommand.')
-      ]
+          .setDescription(
+            '<a:spider_cross:1514728338701287640> This menu isn\'t yours.'
+          )
+      ],
+      ephemeral: true
     });
   }
+
+  if (interaction.customId === 'first') page = 0;
+  if (interaction.customId === 'previous') page = page > 0 ? page - 1 : 0;
+  if (interaction.customId === 'next') page = page < pages.length - 1 ? page + 1 : pages.length - 1;
+  if (interaction.customId === 'last') page = pages.length - 1;
+
+  if (interaction.customId === 'delete') {
+    return msg.delete();
+  }
+
+  await interaction.update({
+    embeds: [pages[page]],
+    components: [row]
+  });
+
+});
+
+}
 };
