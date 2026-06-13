@@ -72,7 +72,7 @@ client.once('ready', () => {
   setInterval(updateStatus, 6500);
 });
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
   if (
