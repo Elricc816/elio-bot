@@ -20,18 +20,25 @@ if (cooldown.has(message.author.id)) {
   ).toFixed(1);
 
   if (timeLeft > 0) {
-    return message.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setColor('#FF7F7F')
-          .setDescription(
+
+  const cooldownMsg = await message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor('#FF7F7F')
+        .setDescription(
 `<:WarningIcon:1514708751385497721> You are under cooldown to this command!
 
 <:arrow:1514699753462566953> Cooldown ~ \`${timeLeft}s\``
-)
-]
-});
-}
+        )
+    ]
+  });
+
+  setTimeout(() => {
+    cooldownMsg.delete().catch(() => {});
+  }, 2000);
+
+  return;
+  }
 }
 
 cooldown.set(message.author.id, Date.now() + cooldownTime);
