@@ -10,5 +10,8 @@
   "discord.js": "^14.21.0",
   "quick.db": "9.1.7",
   "better-sqlite3": "^11.10.0"
+    "distube": "^5.0.5",
+"@distube/youtube": "^1.0.2",
+"@discordjs/voice": "^0.18.0"
   }
 }
