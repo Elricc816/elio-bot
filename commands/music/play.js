@@ -66,14 +66,8 @@ module.exports = {
       console.log(err);
 
       message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("#FF7F7F")
-            .setDescription(
-              "<a:spider_cross:1514728338701287640> Failed to play the requested song."
-            )
-        ]
-      });
+  content: `Error: ${err.message}`
+});
     }
   }
 };
