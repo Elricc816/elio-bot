@@ -6,13 +6,18 @@ const path = require('path');
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.MessageContent,
+  GatewayIntentBits.GuildVoiceStates
+]
 });
 
 client.commands = new Collection();
+
+client.distube = new DisTube(client, {
+  plugins: [new YouTubePlugin()]
+});
 
 const prefix = ',';
 
