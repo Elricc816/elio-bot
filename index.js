@@ -139,7 +139,7 @@ return;
   try {
     command.execute(message, args, client);
   } catch (err) {
-    console.log(err);
+    console.error("PLAY ERROR:", err);
     message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
 });
