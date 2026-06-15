@@ -1,5 +1,6 @@
 const { DisTube } = require('distube');
 const { YouTubePlugin } = require('@distube/youtube');
+const ffmpeg = require("ffmpeg-static");
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -16,7 +17,10 @@ const client = new Client({
 client.commands = new Collection();
 
 client.distube = new DisTube(client, {
-  plugins: [new YouTubePlugin()]
+  plugins: [new YouTubePlugin()],
+  ffmpeg: {
+    path: ffmpeg
+  }
 });
 
 const prefix = ',';
