@@ -1,6 +1,9 @@
 const { DisTube } = require('distube');
 const { YouTubePlugin } = require('@distube/youtube');
 const ffmpeg = require("ffmpeg-static");
+
+console.log("Node Version:", process.version);
+
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
