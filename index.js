@@ -17,11 +17,15 @@ const client = new Client({
 client.commands = new Collection();
 
 client.distube = new DisTube(client, {
+  emitNewSongOnly: true,
   plugins: [new YouTubePlugin()],
   ffmpeg: {
     path: ffmpeg
   }
 });
+
+client.distube.on("ffmpegDebug", console.log);
+client.distube.on("debug", console.log);
 
 const prefix = ',';
 
