@@ -143,5 +143,9 @@ return;
     message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
 });
+client.distube.on("error", (channel, error) => {
+  console.log("DISTUBE ERROR:");
+  console.error(error);
+});
 
 client.login(process.env.TOKEN);
