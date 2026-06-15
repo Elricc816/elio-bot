@@ -66,7 +66,7 @@ module.exports = {
       console.log(err);
 
       message.reply({
-  content: `Error: ${err.message}`
+  content: `Error: ${err.stack || err.message}`
 });
     }
   }
