@@ -1,3 +1,4 @@
+console.log("play.js loaded");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
