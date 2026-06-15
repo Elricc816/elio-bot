@@ -137,8 +137,8 @@ return;
     return message.reply({ embeds: [embed] });
   }
   try {
-    command.execute(message, args, client);
-  } catch (err) {
+  await command.execute(message, args, client);
+} catch (err) {
     console.error("PLAY ERROR:", err);
     message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
