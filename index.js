@@ -8,6 +8,9 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
 const client = new Client({
   intents: [
   GatewayIntentBits.Guilds,
