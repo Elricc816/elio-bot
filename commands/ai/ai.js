@@ -1,5 +1,6 @@
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
+
 const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
@@ -10,27 +11,41 @@ module.exports = {
     const query = args.join(" ");
     if (!query) return message.reply("❌ Please provide a message.");
 
-    const loading = await message.reply("🤖 Thinking...");
+    const loading = await message.reply(
+      "<:bot1:1514699532686852227> Typing..."
+    );
 
     try {
+      // Get memory
+      const history =
+        (await db.get(`chat_${message.author.id}`)) || [];
+
+      // Build messages
+      const messages = [
+        {
+          role: "system",
+          content:
+            "You are Elio AI. You remember previous messages and reply naturally like a Discord assistant. Keep answers short and helpful."
+        },
+        ...history.slice(-10),
+        {
+          role: "user",
+          content: query
+        }
+      ];
+
+      // Save user message
+      await db.push(`chat_${message.author.id}`, {
+        role: "user",
+        content: query
+      });
+
+      // API request
       const res = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
           model: "llama-3.3-70b-versatile",
-          const history = await db.get(`chat_${message.author.id}`) || [];
-
-const messages: messages
-  {
-    role: "system",
-    content:
-      "You are Elio AI. You remember previous messages and reply naturally like a chat assistant. Keep answers short and helpful."
-  },
-  ...history.slice(-10),
-  {
-    role: "user",
-    content: query
-  }
-];
+          messages: messages
         },
         {
           headers: {
@@ -41,22 +56,19 @@ const messages: messages
       );
 
       const reply = res.data.choices[0].message.content;
-await db.push(`chat_${message.author.id}`, {
-  role: "assistant",
-  content: reply
-});
 
-      const embed = new EmbedBuilder()
-        .setColor("#3498db")
-        .setTitle("🤖 Elio AI")
-        .setDescription(reply.slice(0, 4000))
-        .setFooter({ text: `Requested by ${message.author.username}` });
+      // Save bot reply
+      await db.push(`chat_${message.author.id}`, {
+        role: "assistant",
+        content: reply
+      });
 
-      loading.edit({ content: "", embeds: [embed] });
+      // Send final response (NO EMBED)
+      return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-  console.log("AI ERROR:", err.response?.data || err.message);
-  loading.edit("❌ AI failed. Check console.");
+      console.log("AI ERROR:", err.response?.data || err.message);
+      loading.edit("❌ AI failed. Check console.");
     }
   }
 };
