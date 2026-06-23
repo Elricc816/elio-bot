@@ -59,9 +59,8 @@ client.once('ready', () => {
   const statuses = [
     'Elric on Top',
     'Nukes? Not Today.',
-    'Infinite Galaxies.',
     'Protecting Servers.',
-    '!help | Security for Your Server.',
+    ',help | Security for Your Server.',
     'Built Different',
     'One Step Ahead',
     'Powered by Elio Devs </>.',
@@ -95,6 +94,7 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
+  db.push(`chat_${message.author.id}`, message.content);
 
   if (
     message.content === `<@${client.user.id}>` ||
