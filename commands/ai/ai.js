@@ -1,3 +1,5 @@
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
 const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
@@ -15,17 +17,20 @@ module.exports = {
         "https://api.groq.com/openai/v1/chat/completions",
         {
           model: "llama-3.3-70b-versatile",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are Elio AI, a helpful Discord bot. Give short, clear, useful answers."
-            },
-            {
-              role: "user",
-              content: query
-            }
-          ]
+          const history = await db.get(`chat_${message.author.id}`) || [];
+
+const messages: messages
+  {
+    role: "system",
+    content:
+      "You are Elio AI. You remember previous messages and reply naturally like a chat assistant. Keep answers short and helpful."
+  },
+  ...history.slice(-10),
+  {
+    role: "user",
+    content: query
+  }
+];
         },
         {
           headers: {
