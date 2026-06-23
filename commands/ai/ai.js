@@ -46,8 +46,8 @@ module.exports = {
       loading.edit({ content: "", embeds: [embed] });
 
     } catch (err) {
-      console.log(err);
-      loading.edit("❌ AI failed to respond.");
+  console.log("AI ERROR:", err.response?.data || err.message);
+  loading.edit("❌ AI failed. Check console.");
     }
   }
 };
