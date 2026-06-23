@@ -50,7 +50,7 @@ module.exports = {
   console.log("DATA:", err.response?.data);
   console.log("MESSAGE:", err.message);
 
-  loading.edit("❌ AI failed. Check Railway logs.");
+  loading.edit("❌ AI failed. Check Railway log.");
     }
   }
 };
