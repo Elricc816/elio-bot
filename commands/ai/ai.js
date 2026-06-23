@@ -64,10 +64,13 @@ module.exports = {
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-  console.log("AI ERROR:", err.response?.data || err.message);
-  console.log("FULL:", err);
+  console.log("========== FULL GROQ ERROR ==========");
+  console.log(JSON.stringify(err.response?.data, null, 2));
+  console.log("STATUS:", err.response?.status);
+  console.log("MESSAGE:", err.message);
+  console.log("=====================================");
 
-  loading.edit("❌ AI failed. Check logs.");
+  loading.edit("❌ AI failed. Check Railway logs.");
     }
   }
 };
