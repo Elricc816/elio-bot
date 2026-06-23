@@ -1,10 +1,13 @@
 const axios = require("axios");
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
 
 module.exports = {
   name: "ai",
 
   async execute(message, args) {
     const query = args.join(" ") || "hello";
+    const history = (await db.get(`chat_${message.author.id}`)) || [];
 
     const loading = await message.reply(
       "<a:loading_Google:1514727933183524964> Typing..."
@@ -16,16 +19,19 @@ module.exports = {
         {
           model: "llama-3.1-8b-instant",
           messages: [
-            {
-              role: "system",
-              content:
-                "You are Elio AI. Reply short and helpful."
-            },
-            {
-              role: "user",
-              content: query
-            }
-          ]
+  {
+    role: "system",
+    content:
+      "You are Elio AI. You remember previous chat and reply naturally. Keep answers short."
+  },
+
+  ...history.slice(-10),
+
+  {
+    role: "user",
+    content: query
+  }
+]
         },
         {
           headers: {
@@ -36,6 +42,15 @@ module.exports = {
       );
 
       const reply = res.data.choices[0].message.content;
+      await db.push(`chat_${message.author.id}`, {
+  role: "user",
+  content: query
+});
+
+await db.push(`chat_${message.author.id}`, {
+  role: "assistant",
+  content: reply
+});
 
       return loading.edit(reply.slice(0, 2000));
 
