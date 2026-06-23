@@ -64,11 +64,12 @@ module.exports = {
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-  console.log("========== FULL GROQ ERROR ==========");
-  console.log(JSON.stringify(err.response?.data, null, 2));
+  console.log("========== AXIOS ERROR ==========");
   console.log("STATUS:", err.response?.status);
+  console.log("DATA:", JSON.stringify(err.response?.data, null, 2));
+  console.log("HEADERS:", err.response?.headers);
   console.log("MESSAGE:", err.message);
-  console.log("=====================================");
+  console.log("FULL ERROR:", err);
 
   loading.edit("❌ AI failed. Check Railway logs.");
     }
