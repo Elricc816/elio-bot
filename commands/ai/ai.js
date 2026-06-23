@@ -1,6 +1,5 @@
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
-
 const axios = require("axios");
 
 module.exports = {
@@ -17,6 +16,7 @@ module.exports = {
     );
 
     try {
+      // GET MEMORY
       const history =
         (await db.get(`chat_${message.author.id}`)) || [];
 
@@ -24,7 +24,7 @@ module.exports = {
         {
           role: "system",
           content:
-            "You are Elio AI. You are a friendly Discord assistant. Keep replies short and helpful."
+            "You are Elio AI, a helpful Discord assistant. Reply short, clear, and natural."
         },
         ...history.slice(-10),
         {
@@ -33,6 +33,7 @@ module.exports = {
         }
       ];
 
+      // CALL GROQ
       const res = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
@@ -49,7 +50,7 @@ module.exports = {
 
       const reply = res.data.choices[0].message.content;
 
-      // SAVE MEMORY
+      // SAVE MEMORY (user + bot)
       await db.push(`chat_${message.author.id}`, {
         role: "user",
         content: query
@@ -63,7 +64,10 @@ module.exports = {
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-      console.log("AI ERROR:", err.response?.data || err.message);
+      console.log("========== AI ERROR ==========");
+      console.log(err.response?.data || err.message);
+      console.log("=============================");
+
       loading.edit("❌ AI failed. Check logs.");
     }
   }
