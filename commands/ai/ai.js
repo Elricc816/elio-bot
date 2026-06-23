@@ -64,11 +64,10 @@ module.exports = {
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-      console.log("========== AI ERROR ==========");
-      console.log(err.response?.data || err.message);
-      console.log("=============================");
+  console.log("AI ERROR:", err.response?.data || err.message);
+  console.log("FULL:", err);
 
-      loading.edit("❌ AI failed. Check logs.");
+  loading.edit("❌ AI failed. Check logs.");
     }
   }
 };
