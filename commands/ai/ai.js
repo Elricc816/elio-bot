@@ -14,7 +14,7 @@ module.exports = {
       const res = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
-          model: "llama3-8b-8192",
+          model: "llama-3.1-8b-instant",
           messages: [
             {
               role: "system",
@@ -40,9 +40,13 @@ module.exports = {
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-      console.log("AI ERROR:", err.response?.data || err.message);
+  console.log("========== AI ERROR ==========");
+  console.log("STATUS:", err.response?.status);
+  console.log("DATA:", JSON.stringify(err.response?.data, null, 2));
+  console.log("MESSAGE:", err.message);
+  console.log("==============================");
 
-      loading.edit("❌ AI failed. Check logs.");
+  loading.edit("❌ AI failed. Check Railway logs.");
     }
   }
 };
