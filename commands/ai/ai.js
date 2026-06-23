@@ -41,6 +41,10 @@ const messages: messages
       );
 
       const reply = res.data.choices[0].message.content;
+await db.push(`chat_${message.author.id}`, {
+  role: "assistant",
+  content: reply
+});
 
       const embed = new EmbedBuilder()
         .setColor("#3498db")
