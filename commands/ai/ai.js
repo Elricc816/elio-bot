@@ -1,6 +1,3 @@
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
-
 const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
@@ -11,41 +8,24 @@ module.exports = {
     const query = args.join(" ");
     if (!query) return message.reply("❌ Please provide a message.");
 
-    const loading = await message.reply(
-      "<:bot1:1514699532686852227> Typing..."
-    );
+    const loading = await message.reply("🤖 Thinking...");
 
     try {
-      // Get memory
-      const history =
-        (await db.get(`chat_${message.author.id}`)) || [];
-
-      // Build messages
-      const messages = [
-        {
-          role: "system",
-          content:
-            "You are Elio AI. You remember previous messages and reply naturally like a Discord assistant. Keep answers short and helpful."
-        },
-        ...history.slice(-10),
-        {
-          role: "user",
-          content: query
-        }
-      ];
-
-      // Save user message
-      await db.push(`chat_${message.author.id}`, {
-        role: "user",
-        content: query
-      });
-
-      // API request
       const res = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
           model: "llama3-8b-8192",
-          messages: messages
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are Elio AI, a helpful Discord bot. Give short, clear, useful answers."
+            },
+            {
+              role: "user",
+              content: query
+            }
+          ]
         },
         {
           headers: {
@@ -57,14 +37,13 @@ module.exports = {
 
       const reply = res.data.choices[0].message.content;
 
-      // Save bot reply
-      await db.push(`chat_${message.author.id}`, {
-        role: "assistant",
-        content: reply
-      });
+      const embed = new EmbedBuilder()
+        .setColor("#3498db")
+        .setTitle("🤖 Elio AI")
+        .setDescription(reply.slice(0, 4000))
+        .setFooter({ text: `Requested by ${message.author.username}` });
 
-      // Send final response (NO EMBED)
-      return loading.edit(reply.slice(0, 2000));
+      return loading.edit({ content: "", embeds: [embed] });
 
     } catch (err) {
       console.log("AI ERROR:", err.response?.data || err.message);
