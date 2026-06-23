@@ -1,6 +1,5 @@
 const axios = require("axios");
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
+const db = require("quick.db");
 
 module.exports = {
   name: "ai",
@@ -42,15 +41,19 @@ module.exports = {
       );
 
       const reply = res.data.choices[0].message.content;
-      await db.push(`chat_${message.author.id}`, {
+      const old = (await db.get(`chat_${message.author.id}`)) || [];
+
+old.push({
   role: "user",
   content: query
 });
 
-await db.push(`chat_${message.author.id}`, {
+old.push({
   role: "assistant",
   content: reply
 });
+
+await db.set(`chat_${message.author.id}`, old);
 
       return loading.edit(reply.slice(0, 2000));
 
