@@ -46,8 +46,11 @@ module.exports = {
       return loading.edit({ content: "", embeds: [embed] });
 
     } catch (err) {
-      console.log("AI FULL ERROR:", err);
-      loading.edit("❌ AI failed. Check console.");
+  console.log("🔥 FULL AI ERROR START");
+  console.log(JSON.stringify(err, null, 2));
+  console.log("🔥 FULL AI ERROR END");
+
+  loading.edit("❌ AI failed. Check Railway logs.");
     }
   }
 };
