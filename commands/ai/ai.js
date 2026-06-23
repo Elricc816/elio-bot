@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         role: "user",
-        content: query || "hello"
+        content: String(query || "hello")
       }
     ]
   },
@@ -34,6 +34,9 @@ module.exports = {
     }
   }
 );
+
+console.log("AI RESPONSE:", JSON.stringify(res.data, null, 2));
+
 
       const reply = res.data.choices[0].message.content;
 
