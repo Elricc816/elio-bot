@@ -1,5 +1,4 @@
 const axios = require("axios");
-const db = require("quick.db");
 
 module.exports = {
   name: "ai",
@@ -12,11 +11,6 @@ module.exports = {
     );
 
     try {
-      // GET HISTORY
-      const history =
-        (await db.get(`chat_${message.author.id}`)) || [];
-
-      // CALL GROQ
       const res = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
@@ -25,9 +19,8 @@ module.exports = {
             {
               role: "system",
               content:
-                "You are Elio AI. Remember chat and reply naturally. Keep answers short."
+                "You are Elio AI. Reply short and helpful."
             },
-            ...history.slice(-10),
             {
               role: "user",
               content: query
@@ -44,22 +37,12 @@ module.exports = {
 
       const reply = res.data.choices[0].message.content;
 
-      // SAVE MEMORY (FIXED)
-      history.push({ role: "user", content: query });
-      history.push({ role: "assistant", content: reply });
-
-      await db.set(`chat_${message.author.id}`, history);
-
       return loading.edit(reply.slice(0, 2000));
 
     } catch (err) {
-      console.log("========== AI ERROR ==========");
-      console.log("STATUS:", err.response?.status);
-      console.log("DATA:", JSON.stringify(err.response?.data, null, 2));
-      console.log("MESSAGE:", err.message);
-      console.log("==============================");
+      console.log("AI ERROR:", err.response?.data || err.message);
 
-      loading.edit("❌ AI failed. Check Railway logs.");
+      loading.edit("❌ AI failed. Check logs.");
     }
   }
 };
