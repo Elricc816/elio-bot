@@ -97,17 +97,35 @@ if (!reply) {
   return loading.edit("❌ No response from AI.");
 }
 
-      const sent = await loading.edit(reply.slice(0, 2000));
+      let text = "";
+const msg = await loading.edit("🤖 typing...");
+
+for (let i = 0; i < reply.length; i++) {
+  text += reply[i];
+
+  if (i % 3 === 0) {
+    await msg.edit(text.slice(0, 2000));
+  }
+}
+
+await msg.edit(text.slice(0, 2000));
 
 await sent.react("1514699727072133233");
 
     } catch (err) {
-  console.log("🔥 GROQ ERROR:");
-  console.log(err.response?.data || err.message);
+  console.log("🔥 AI ERROR:", err.response?.data || err.message);
 
-  return loading.edit(
-    "❌ AI failed (API issue). Try again in a few seconds."
-  );
+  let msg = "❌ AI is tired right now 😅 try again in a few seconds.";
+
+  if (err.response?.status === 429) {
+    msg = "⏳ Too many requests 😭 slow down a bit!";
+  }
+
+  if (err.response?.status === 500) {
+    msg = "💥 AI server issue 🥲 try again later!";
+  }
+
+  return loading.edit(msg);
     }
   }
 };
