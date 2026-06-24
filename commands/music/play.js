@@ -6,15 +6,13 @@ module.exports = {
   async execute(message, args, client) {
 
     const voiceChannel = message.member.voice.channel;
-
     if (!voiceChannel) {
       return message.reply("❌ Join a voice channel first!");
     }
 
     const query = args.join(" ");
-
     if (!query) {
-      return message.reply("❌ Give a song name or URL!");
+      return message.reply("❌ Provide a song name or URL!");
     }
 
     try {
@@ -22,7 +20,7 @@ module.exports = {
       const player = await client.shoukaku.joinVoiceChannel({
         guildId: message.guild.id,
         channelId: voiceChannel.id,
-        shardId: 0
+        shardId: message.guild.shardId || 0
       });
 
       const result = await client.shoukaku.rest.resolve(query);
@@ -33,20 +31,19 @@ module.exports = {
 
       const track = result.tracks[0];
 
-      await player.playTrack({ track: track.encoded });
+      await player.playTrack(track.encoded);
 
       const embed = new EmbedBuilder()
         .setColor("#00FF99")
         .setTitle("🎵 Now Playing")
-        .setDescription(`**${track.info.title}**`)
-        .setFooter({ text: "Elio Music System" });
+        .setDescription(track.info.title);
 
-      message.reply({ embeds: [embed] });
+      return message.reply({ embeds: [embed] });
 
     } catch (err) {
       console.log("PLAY ERROR:", err);
 
-      message.reply("❌ Failed to play song 😅");
+      return message.reply("❌ Lavalink error 😅 check console");
     }
   }
 };
