@@ -1,3 +1,7 @@
+const { Shoukaku } = require("shoukaku");
+const { nodes } = require("./lavalink");
+const { Connectors } = require("shoukaku");
+
 const { DisTube } = require('distube');
 const { YouTubePlugin } = require('@distube/youtube');
 const ffmpeg = require("ffmpeg-static");
