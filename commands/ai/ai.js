@@ -43,10 +43,16 @@ module.exports = {
       );
 
       const reply = res.data?.choices?.[0]?.message?.content;
+      if (!reply || reply.trim().length === 0) {
+  return loading.edit("❌ Empty AI response. Try again.");
+      }
       history.push({ role: "user", content: query });
 history.push({ role: "assistant", content: reply });
 
-await db.set(`chat_${message.author.id}`, history.slice(-20));
+await db.set(
+  `chat_${message.author.id}`,
+  history.filter(m => m.content).slice(-12)
+);
 
 if (!reply) {
   return loading.edit("❌ No response from AI.");
@@ -57,11 +63,11 @@ if (!reply) {
 await sent.react("1514699727072133233");
 
     } catch (err) {
-  console.log("AI ERROR FULL:");
+  console.log("🔥 GROQ ERROR:");
   console.log(err.response?.data || err.message);
 
   return loading.edit(
-    "❌ AI failed. Please try again later."
+    "❌ AI failed (API issue). Try again in a few seconds."
   );
     }
   }
