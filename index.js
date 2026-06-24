@@ -103,7 +103,7 @@ if (message.reference) {
 
     if (
   replied.author.id === client.user.id &&
-  replied.reactions.cache.has("🤖")
+  replied.reactions.cache.has("<:vip:1514699727072133233>")
 ) {
   const aiCommand = client.commands.get("ai");
 
