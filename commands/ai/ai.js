@@ -35,8 +35,12 @@ module.exports = {
         }
       );
 
-      const reply = res.data.choices[0].message.content;
+      const reply =
+  res.data?.choices?.[0]?.message?.content;
 
+if (!reply) {
+  return loading.edit("❌ AI returned empty response. Try again.");
+}
       const sent = await loading.edit(reply.slice(0, 2000));
 
 await sent.react("<1514699727072133233>");
