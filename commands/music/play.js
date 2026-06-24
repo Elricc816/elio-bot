@@ -1,4 +1,3 @@
-console.log("play.js loaded");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -9,65 +8,45 @@ module.exports = {
     const voiceChannel = message.member.voice.channel;
 
     if (!voiceChannel) {
-
-      const embed = new EmbedBuilder()
-        .setColor("#FF7F7F")
-        .setTitle("You can't use this command!")
-        .setDescription(
-`<a:spider_cross:1514728338701287640> You are restricted from using this command!
-
-<:arrow:1514699753462566953> Restriction Reason ~ \`Voice Connection\``
-        );
-
-      const msg = await message.reply({
-        embeds: [embed]
-      });
-
-      setTimeout(() => {
-        msg.delete().catch(() => {});
-      }, 10000);
-
-      return;
+      return message.reply("❌ Join a voice channel first!");
     }
 
     const query = args.join(" ");
 
     if (!query) {
-
-      const embed = new EmbedBuilder()
-        .setColor("#FF7F7F")
-        .setDescription(
-`<:WarningIcon:1514708751385497721> Please provide a song name or YouTube URL.`
-        );
-
-      const msg = await message.reply({
-        embeds: [embed]
-      });
-
-      setTimeout(() => {
-        msg.delete().catch(() => {});
-      }, 10000);
-
-      return;
+      return message.reply("❌ Give a song name or URL!");
     }
 
     try {
 
-      await client.distube.play(
-        voiceChannel,
-        query,
-        {
-          member: message.member,
-          textChannel: message.channel
-        }
-      );
+      const player = await client.shoukaku.joinVoiceChannel({
+        guildId: message.guild.id,
+        channelId: voiceChannel.id,
+        shardId: 0
+      });
+
+      const result = await client.shoukaku.rest.resolve(query);
+
+      if (!result?.tracks?.length) {
+        return message.reply("❌ No song found!");
+      }
+
+      const track = result.tracks[0];
+
+      await player.playTrack({ track: track.encoded });
+
+      const embed = new EmbedBuilder()
+        .setColor("#00FF99")
+        .setTitle("🎵 Now Playing")
+        .setDescription(`**${track.info.title}**`)
+        .setFooter({ text: "Elio Music System" });
+
+      message.reply({ embeds: [embed] });
 
     } catch (err) {
-      console.log(err);
+      console.log("PLAY ERROR:", err);
 
-      message.reply({
-  content: `Error: ${err.stack || err.message}`
-});
+      message.reply("❌ Failed to play song 😅");
     }
   }
 };
