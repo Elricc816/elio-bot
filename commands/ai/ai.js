@@ -49,14 +49,18 @@ module.exports = {
     }
 
     try {
-      const res = await axios.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          model: "llama-3.1-8b-instant",
-          messages: [
-            {
-              role: "system",
-              content: `
+      let res;
+
+for (let i = 0; i < 2; i++) {
+  try {
+    res = await axios.post(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        model: "llama-3.1-8b-instant",
+        messages: [
+          {
+            role: "system",
+            content: `
 You are Elio AI 🤖.
 
 Rules:
@@ -66,23 +70,29 @@ Rules:
 - Keep replies 1–4 lines max
 - Understand emotions and respond properly
 `
-            },
+          },
 
-            ...history.slice(-10),
+          ...history.slice(-6),
 
-            {
-              role: "user",
-              content: query
-            }
-          ]
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-            "Content-Type": "application/json"
+          {
+            role: "user",
+            content: query
           }
+        ]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json"
         }
-      );
+      }
+    );
+
+    break;
+  } catch (err) {
+    if (i === 1) throw err;
+  }
+}
 
       const reply = res.data?.choices?.[0]?.message?.content;
 
