@@ -1,3 +1,4 @@
+const cooldown = new Map();
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 const axios = require("axios");
@@ -13,6 +14,17 @@ module.exports = {
     const loading = await message.reply(
       "<a:loading_Google:1514727933183524964> Typing..."
     );
+    const userId = message.author.id;
+
+if (cooldown.has(userId)) {
+  const timeLeft = cooldown.get(userId) - Date.now();
+
+  if (timeLeft > 0) {
+    return loading.edit(
+      `⏳ Wait ${Math.ceil(timeLeft / 1000)}s before using AI again.`
+    );
+  }
+}
 
     try {
       const res = await axios.post(
@@ -43,6 +55,7 @@ module.exports = {
       );
 
       const reply = res.data?.choices?.[0]?.message?.content;
+      cooldown.set(message.author.id, Date.now() + 5000);
       if (!reply || reply.trim().length === 0) {
   return loading.edit("❌ Empty AI response. Try again.");
       }
