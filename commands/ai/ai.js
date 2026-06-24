@@ -97,14 +97,9 @@ if (!reply) {
   return loading.edit("❌ No response from AI.");
 }
 
-      let text = "";
-const msg = await loading.edit("🤖 typing...");
+      const sent = await loading.edit(reply.slice(0, 2000));
 
-for (let i = 0; i < reply.length; i++) {
-  text += reply[i];
-
-  if (i % 3 === 0) {
-    await msg.edit(text.slice(0, 2000));
+await sent.react("1514699727072133233");
   }
 }
 
