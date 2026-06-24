@@ -8,6 +8,8 @@ module.exports = {
 
   async execute(message, args) {
     const query = args.join(" ").trim();
+
+    await db.delete(`chat_${message.author.id}`);
     const userId = message.author.id;
 
     const history =
@@ -72,7 +74,15 @@ Rules:
 `
           },
 
-          ...history.slice(-6),
+          ...history
+  .filter(
+    m =>
+      m &&
+      typeof m === "object" &&
+      typeof m.role === "string" &&
+      typeof m.content === "string"
+  )
+  .slice(-10),
 
           {
             role: "user",
