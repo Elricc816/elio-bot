@@ -39,7 +39,7 @@ module.exports = {
 
       const sent = await loading.edit(reply.slice(0, 2000));
 
-await sent.react("🤖");
+await sent.react("<:vip:1514699727072133233>");
 
     } catch (err) {
       console.log("AI ERROR:", err.response?.data || err.message);
