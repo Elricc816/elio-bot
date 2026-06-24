@@ -37,7 +37,9 @@ module.exports = {
 
       const reply = res.data.choices[0].message.content;
 
-      return loading.edit(reply.slice(0, 2000));
+      const sent = await loading.edit(reply.slice(0, 2000));
+
+await sent.react("🤖");
 
     } catch (err) {
       console.log("AI ERROR:", err.response?.data || err.message);
