@@ -46,9 +46,12 @@ if (!reply) {
 await sent.react("<1514699727072133233>");
 
     } catch (err) {
-      console.log("AI ERROR:", err.response?.data || err.message);
+  console.log("AI ERROR FULL:");
+  console.log(err.response?.data || err.message);
 
-      loading.edit("❌ AI failed. Check logs.");
+  return loading.edit(
+    "❌ AI failed. Please try again later."
+  );
     }
   }
 };
