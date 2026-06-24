@@ -7,13 +7,31 @@ module.exports = {
   name: "ai",
 
   async execute(message, args) {
-    const query = args.join(" ") || "hello";
+    const query = args.join(" ").trim();
     const history =
   (await db.get(`chat_${message.author.id}`)) || [];
 
     const loading = await message.reply(
       "<a:loading_Google:1514727933183524964> Typing..."
     );
+    if (!query) {
+  const { EmbedBuilder } = require("discord.js");
+
+  const embed = new EmbedBuilder()
+    .setColor("#D3D3D3")
+    .setTitle("<:bot3:1514699096047358082> AI Command Help")
+    .setDescription(
+`**\`\`\`yml
+<..> <required> | [..] [optional]
+\`\`\`**
+
+> **\`.ai <query>\`**
+
+<:arrow:1514699753462566953> Ask the chatbot a question with a predefined profile.`
+    );
+
+  return loading.edit({ content: "", embeds: [embed] });
+    }
     const userId = message.author.id;
 
 if (cooldown.has(userId)) {
@@ -21,7 +39,7 @@ if (cooldown.has(userId)) {
 
   if (timeLeft > 0) {
     return loading.edit(
-      `⏳ Wait ${Math.ceil(timeLeft / 1000)}s before using AI again.`
+      `<a:clockk:1514734530282520647> Wait ${Math.ceil(timeLeft / 1000)}s before using AI again.`
     );
   }
 }
