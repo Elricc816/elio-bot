@@ -8,19 +8,23 @@ module.exports = {
 
   async execute(message, args) {
     const query = args.join(" ").trim();
+    const userId = message.author.id;
+
     const history =
-  (await db.get(`chat_${message.author.id}`)) || [];
+      (await db.get(`chat_${userId}`)) || [];
 
     const loading = await message.reply(
       "<a:loading_Google:1514727933183524964> Typing..."
     );
-    if (!query) {
-  const { EmbedBuilder } = require("discord.js");
 
-  const embed = new EmbedBuilder()
-    .setColor("#D3D3D3")
-    .setTitle("<:bot3:1514699096047358082> AI Command Help")
-    .setDescription(
+    // 🧠 EMPTY QUERY CHECK (HELP EMBED)
+    if (!query) {
+      const { EmbedBuilder } = require("discord.js");
+
+      const embed = new EmbedBuilder()
+        .setColor("#D3D3D3")
+        .setTitle("<:bot3:1514699096047358082> AI Command Help")
+        .setDescription(
 `**\`\`\`yml
 <..> <required> | [..] [optional]
 \`\`\`**
@@ -28,21 +32,21 @@ module.exports = {
 > **\`,ai <query>\`**
 
 <:arrow:1514699753462566953> Ask the chatbot a question with a predefined profile.`
-    );
+        );
 
-  return loading.edit({ content: "", embeds: [embed] });
+      return loading.edit({ content: "", embeds: [embed] });
     }
-    const userId = message.author.id;
 
-if (cooldown.has(userId)) {
-  const timeLeft = cooldown.get(userId) - Date.now();
+    // ⏳ COOLDOWN CHECK
+    if (cooldown.has(userId)) {
+      const timeLeft = cooldown.get(userId) - Date.now();
 
-  if (timeLeft > 0) {
-    return loading.edit(
-      `<a:clockk:1514734530282520647> Wait ${Math.ceil(timeLeft / 1000)}s before using AI again.`
-    );
-  }
-}
+      if (timeLeft > 0) {
+        return loading.edit(
+          `<a:clockk:1514734530282520647> Wait ${Math.ceil(timeLeft / 1000)}s before using AI again.`
+        );
+      }
+    }
 
     try {
       const res = await axios.post(
@@ -50,9 +54,9 @@ if (cooldown.has(userId)) {
         {
           model: "llama-3.1-8b-instant",
           messages: [
-  {
-    role: "system",
-    content: `
+            {
+              role: "system",
+              content: `
 You are Elio AI 🤖.
 
 Rules:
@@ -62,15 +66,15 @@ Rules:
 - Keep replies 1–4 lines max
 - Understand emotions and respond properly
 `
-  },
+            },
 
-  ...history.slice(-10),
+            ...history.slice(-10),
 
-  {
-    role: "user",
-    content: query
-  }
-]
+            {
+              role: "user",
+              content: query
+            }
+          ]
         },
         {
           headers: {
@@ -81,46 +85,41 @@ Rules:
       );
 
       const reply = res.data?.choices?.[0]?.message?.content;
-      cooldown.set(message.author.id, Date.now() + 5000);
+
       if (!reply || reply.trim().length === 0) {
-  return loading.edit("❌ Empty AI response. Try again.");
+        return loading.edit("❌ Empty AI response. Try again.");
       }
+
+      // 💾 SAVE MEMORY
       history.push({ role: "user", content: query });
-history.push({ role: "assistant", content: reply });
+      history.push({ role: "assistant", content: reply });
 
-await db.set(
-  `chat_${message.author.id}`,
-  history.filter(m => m.content).slice(-12)
-);
+      await db.set(
+        `chat_${userId}`,
+        history.filter(m => m.content).slice(-12)
+      );
 
-if (!reply) {
-  return loading.edit("❌ No response from AI.");
-}
+      // ⚡ SET COOLDOWN
+      cooldown.set(userId, Date.now() + 5000);
 
       const sent = await loading.edit(reply.slice(0, 2000));
 
-await sent.react("1514699727072133233");
-  }
-}
-
-await msg.edit(text.slice(0, 2000));
-
-await sent.react("1514699727072133233");
+      await sent.react("1514699727072133233");
 
     } catch (err) {
-  console.log("🔥 AI ERROR:", err.response?.data || err.message);
+      console.log("🔥 AI ERROR:", err.response?.data || err.message);
 
-  let msg = "❌ AI is tired right now 😅 try again in a few seconds.";
+      let msg = "❌ AI is tired right now 😅 try again in a few seconds.";
 
-  if (err.response?.status === 429) {
-    msg = "⏳ Too many requests 😭 slow down a bit!";
-  }
+      if (err.response?.status === 429) {
+        msg = "⏳ Too many requests 😭 slow down a bit!";
+      }
 
-  if (err.response?.status === 500) {
-    msg = "💥 AI server issue 🥲 try again later!";
-  }
+      if (err.response?.status === 500) {
+        msg = "💥 AI server issue 🥲 try again later!";
+      }
 
-  return loading.edit(msg);
+      return loading.edit(msg);
     }
   }
 };
