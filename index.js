@@ -96,7 +96,6 @@ client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
 if (message.reference) {
-if (message.reference) {
   try {
     const replied = await message.channel.messages.fetch(
       message.reference.messageId
