@@ -1,6 +1,6 @@
 const { Shoukaku } = require("shoukaku");
-const { nodes } = require("./lavalink");
 const { Connectors } = require("shoukaku");
+const { nodes } = require("./lavalink");
 
 console.log("Node Version:", process.version);
 
@@ -12,6 +12,7 @@ const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
 const client = new Client({
+  
   intents: [
   GatewayIntentBits.Guilds,
   GatewayIntentBits.GuildMessages,
@@ -19,6 +20,11 @@ const client = new Client({
   GatewayIntentBits.GuildVoiceStates
 ]
 });
+
+client.shoukaku = new Shoukaku(
+  new Connectors.DiscordJS(client),
+  nodes
+);
 
 client.commands = new Collection();
 
