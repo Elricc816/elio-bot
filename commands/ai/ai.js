@@ -8,8 +8,7 @@ module.exports = {
 
   async execute(message, args) {
     const query = args.join(" ").trim();
-
-    await db.delete(`chat_${message.author.id}`);
+    
     const userId = message.author.id;
 
     const history =
