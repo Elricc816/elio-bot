@@ -94,6 +94,27 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
+
+if (message.reference) {
+  try {
+    const replied = await message.channel.messages.fetch(
+      message.reference.messageId
+    );
+
+    if (replied.author.id === client.user.id) {
+      const aiCommand = client.commands.get("ai");
+
+      return aiCommand.execute(
+        message,
+        message.content.split(" ")
+      );
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+  
+  if (message.author.bot) return;
   db.push(`chat_${message.author.id}`, message.content);
 
   if (
