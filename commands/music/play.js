@@ -12,30 +12,35 @@ module.exports = {
     }
 
     const query = args.join(" ");
+
     if (!query) {
-      return message.reply("❌ Provide a song name!");
+      return message.reply("❌ Provide a song name or URL!");
     }
 
     try {
 
-      const node = client.shoukaku.getNode();
+      // GET NODE (SAFE WAY)
+      const node = [...client.shoukaku.nodes.values()][0];
 
+      // CONNECT PLAYER
       const player = await node.joinChannel({
         guildId: message.guild.id,
         channelId: voiceChannel.id,
-        shardId: message.guild.shardId || 0,
+        shardId: 0,
         deaf: true
       });
 
+      // SEARCH TRACK
       const result = await node.rest.resolve(query);
 
-      if (!result?.tracks?.length) {
+      if (!result || !result.tracks.length) {
         return message.reply("❌ No song found!");
       }
 
       const track = result.tracks[0];
 
-      player.playTrack({ track: track.encoded });
+      // PLAY TRACK (CORRECT WAY)
+      await player.playTrack(track.encoded);
 
       const embed = new EmbedBuilder()
         .setColor("#00FF99")
@@ -45,9 +50,9 @@ module.exports = {
       return message.reply({ embeds: [embed] });
 
     } catch (err) {
-      console.log("REAL ERROR:", err);
+      console.log("PLAY ERROR:", err);
 
-      return message.reply("❌ Lavalink connection failed 😭 check logs");
+      return message.reply("❌ Lavalink error 😭 check console");
     }
   }
 };
