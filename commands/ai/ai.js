@@ -25,7 +25,7 @@ module.exports = {
 <..> <required> | [..] [optional]
 \`\`\`**
 
-> **\`.ai <query>\`**
+> **\`,ai <query>\`**
 
 <:arrow:1514699753462566953> Ask the chatbot a question with a predefined profile.`
     );
