@@ -101,16 +101,13 @@ if (message.reference) {
       message.reference.messageId
     );
 
-    if (
-  replied.author.id === client.user.id &&
-  replied.reactions.cache.has("<:vip:1514699727072133233>")
-) {
-  const aiCommand = client.commands.get("ai");
+    if (replied.author.id === client.user.id) {
+      const aiCommand = client.commands.get("ai");
 
-  return aiCommand.execute(
-    message,
-    message.content.split(" ")
-  );
+      return aiCommand.execute(
+        message,
+        message.content.split(" ")
+      );
     }
   } catch (err) {
     console.log(err);
