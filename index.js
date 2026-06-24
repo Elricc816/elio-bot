@@ -2,10 +2,6 @@ const { Shoukaku } = require("shoukaku");
 const { nodes } = require("./lavalink");
 const { Connectors } = require("shoukaku");
 
-const { DisTube } = require('distube');
-const { YouTubePlugin } = require('@distube/youtube');
-const ffmpeg = require("ffmpeg-static");
-
 console.log("Node Version:", process.version);
 
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
@@ -25,17 +21,6 @@ const client = new Client({
 });
 
 client.commands = new Collection();
-
-client.distube = new DisTube(client, {
-  emitNewSongOnly: true,
-  plugins: [new YouTubePlugin()],
-  ffmpeg: {
-    path: ffmpeg
-  }
-});
-
-client.distube.on("ffmpegDebug", console.log);
-client.distube.on("debug", console.log);
 
 const prefix = ',';
 
@@ -186,10 +171,6 @@ return;
     console.error("PLAY ERROR:", err);
     message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
-});
-client.distube.on("error", (channel, error) => {
-  console.log("DISTUBE ERROR:");
-  console.error(error);
 });
 
 client.login(process.env.TOKEN);
