@@ -96,12 +96,18 @@ client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
 if (message.reference) {
+if (message.reference) {
   try {
     const replied = await message.channel.messages.fetch(
       message.reference.messageId
     );
 
-    if (replied.author.id === client.user.id) {
+    const isAiMessage =
+      replied.reactions.cache.some(
+        r => r.emoji.id === "1514699727072133233"
+      );
+
+    if (isAiMessage) {
       const aiCommand = client.commands.get("ai");
 
       return aiCommand.execute(
