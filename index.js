@@ -1,3 +1,11 @@
+process.on("unhandledRejection", (err) => {
+  console.error("UNHANDLED REJECTION:", err);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
+
 const { Shoukaku } = require("shoukaku");
 const { Connectors } = require("shoukaku");
 const { nodes } = require("./lavalink");
