@@ -6,10 +6,6 @@ process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION:", err);
 });
 
-const { Shoukaku } = require("shoukaku");
-const { Connectors } = require("shoukaku");
-const { nodes } = require("./lavalink");
-
 console.log("Node Version:", process.version);
 
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
@@ -35,31 +31,6 @@ const client = new Client({
   GatewayIntentBits.MessageContent,
   GatewayIntentBits.GuildVoiceStates
 ]
-});
-
-client.shoukaku = new Shoukaku(
-  new Connectors.DiscordJS(client),
-  nodes
-);
-
-client.shoukaku.on("ready", (name) => {
-  console.log("🟢 Lavalink READY:", name);
-});
-
-client.shoukaku.on("error", (name, error) => {
-  console.log("❌ Lavalink ERROR:", name, error);
-});
-
-client.shoukaku.on("close", (name, code, reason) => {
-  console.log("⚠️ Lavalink CLOSED:", name, code, reason);
-});
-
-client.shoukaku.on("ready", (name) => {
-  console.log("🟢 Lavalink ready:", name);
-});
-
-client.shoukaku.on("error", (name, error) => {
-  console.log("❌ Lavalink error:", name, error);
 });
 
 client.commands = new Collection();
