@@ -1,9 +1,9 @@
 const nodes = [
   {
     name: "main",
-    url: "lavalink1.alexanderf.dev",
+    url: "lavalink.oops.wtf",
     port: 443,
-    auth: "alexisthebest",
+    auth: "discord.gg/freenode",
     secure: true
   }
 ];
