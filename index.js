@@ -43,6 +43,18 @@ client.shoukaku = new Shoukaku(
 );
 
 client.shoukaku.on("ready", (name) => {
+  console.log("🟢 Lavalink READY:", name);
+});
+
+client.shoukaku.on("error", (name, error) => {
+  console.log("❌ Lavalink ERROR:", name, error);
+});
+
+client.shoukaku.on("close", (name, code, reason) => {
+  console.log("⚠️ Lavalink CLOSED:", name, code, reason);
+});
+
+client.shoukaku.on("ready", (name) => {
   console.log("🟢 Lavalink ready:", name);
 });
 
