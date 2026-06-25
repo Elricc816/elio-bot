@@ -22,13 +22,14 @@ module.exports = {
       const node = [...client.shoukaku.nodes.values()][0];
 
       if (!node) {
-        return message.reply("❌ Lavalink node not connected!");
+        return message.reply("❌ Lavalink node not connected");
       }
 
-      const player = client.shoukaku.createPlayer({
+      const player = await client.shoukaku.joinVoiceChannel({
         guildId: message.guild.id,
+        channelId: voiceChannel.id,
         shardId: 0,
-        voiceChannelId: voiceChannel.id
+        deaf: true
       });
 
       const result = await node.rest.resolve(query);
@@ -50,7 +51,7 @@ module.exports = {
 
     } catch (err) {
 
-      console.log("PLAY ERROR:", err);
+      console.log("FULL ERROR:", err);
 
       return message.reply("❌ Lavalink error 😭 check console");
     }
