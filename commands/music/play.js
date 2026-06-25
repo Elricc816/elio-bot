@@ -12,22 +12,19 @@ module.exports = {
     const query = args.join(" ");
 
     if (!query) {
-      return message.reply("❌ Provide a song name or URL!");
+      return message.reply("❌ Provide a song name!");
     }
 
     try {
 
-      // 🔥 DIS-TUBE PLAY (CORRECT WAY)
-      client.distube.play(voiceChannel, query, {
+      await client.distube.play(voiceChannel, query, {
         textChannel: message.channel,
         member: message.member
       });
 
-      return message.reply("🎵 Searching and playing song...");
-
     } catch (err) {
-      console.log("PLAY ERROR:", err);
-      return message.reply("❌ Error playing song 😭");
+      console.log("DISTUBE PLAY ERROR:", err);
+      return message.reply("❌ Error playing song 😭 check console");
     }
   }
 };
