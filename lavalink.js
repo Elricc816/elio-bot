@@ -1,8 +1,9 @@
 const nodes = [
   {
     name: "main",
-    url: "https://lavalink-latest-bcvc.onrender.com",
-    auth: "youshallnotpass",
+    url: "lavalink.oops.wtf",
+    port: 443,
+    auth: "discord.gg/freenode",
     secure: true
   }
 ];
