@@ -42,6 +42,14 @@ client.shoukaku = new Shoukaku(
   nodes
 );
 
+client.shoukaku.on("ready", (name) => {
+  console.log("🟢 Lavalink ready:", name);
+});
+
+client.shoukaku.on("error", (name, error) => {
+  console.log("❌ Lavalink error:", name, error);
+});
+
 client.commands = new Collection();
 
 const prefix = ',';
