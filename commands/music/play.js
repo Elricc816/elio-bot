@@ -19,18 +19,18 @@ module.exports = {
 
     try {
 
-      // GET NODE (SAFE WAY)
       const node = [...client.shoukaku.nodes.values()][0];
 
-      // CONNECT PLAYER
-      const player = await node.joinChannel({
+      if (!node) {
+        return message.reply("❌ Lavalink node not connected!");
+      }
+
+      const player = client.shoukaku.createPlayer({
         guildId: message.guild.id,
-        channelId: voiceChannel.id,
         shardId: 0,
-        deaf: true
+        voiceChannelId: voiceChannel.id
       });
 
-      // SEARCH TRACK
       const result = await node.rest.resolve(query);
 
       if (!result || !result.tracks.length) {
@@ -39,7 +39,6 @@ module.exports = {
 
       const track = result.tracks[0];
 
-      // PLAY TRACK (CORRECT WAY)
       await player.playTrack(track.encoded);
 
       const embed = new EmbedBuilder()
@@ -50,6 +49,7 @@ module.exports = {
       return message.reply({ embeds: [embed] });
 
     } catch (err) {
+
       console.log("PLAY ERROR:", err);
 
       return message.reply("❌ Lavalink error 😭 check console");
