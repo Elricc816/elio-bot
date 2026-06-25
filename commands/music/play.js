@@ -1,5 +1,3 @@
-const { EmbedBuilder } = require("discord.js");
-
 module.exports = {
   name: "play",
 
@@ -19,41 +17,17 @@ module.exports = {
 
     try {
 
-      const node = [...client.shoukaku.nodes.values()][0];
-
-      if (!node) {
-        return message.reply("❌ Lavalink node not connected");
-      }
-
-      const player = await client.shoukaku.joinVoiceChannel({
-        guildId: message.guild.id,
-        channelId: voiceChannel.id,
-        shardId: 0,
-        deaf: true
+      // 🔥 DIS-TUBE PLAY (CORRECT WAY)
+      client.distube.play(voiceChannel, query, {
+        textChannel: message.channel,
+        member: message.member
       });
 
-      const result = await node.rest.resolve(query);
-
-      if (!result || !result.tracks.length) {
-        return message.reply("❌ No song found!");
-      }
-
-      const track = result.tracks[0];
-
-      await player.playTrack(track.encoded);
-
-      const embed = new EmbedBuilder()
-        .setColor("#00FF99")
-        .setTitle("🎵 Now Playing")
-        .setDescription(track.info.title);
-
-      return message.reply({ embeds: [embed] });
+      return message.reply("🎵 Searching and playing song...");
 
     } catch (err) {
-
-      console.log("FULL ERROR:", err);
-
-      return message.reply("❌ Lavalink error 😭 check console");
+      console.log("PLAY ERROR:", err);
+      return message.reply("❌ Error playing song 😭");
     }
   }
 };
