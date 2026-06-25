@@ -1,10 +1,9 @@
 const nodes = [
   {
     name: "main",
-    url: "lavalink-latest-bcvc.onrender.com",
-    port: 2333,
+    url: "https://lavalink-latest-bcvc.onrender.com",
     auth: "youshallnotpass",
-    secure: false
+    secure: true
   }
 ];
 
