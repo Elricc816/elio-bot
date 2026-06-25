@@ -19,6 +19,14 @@ const path = require('path');
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
+setInterval(() => {
+  const mem = process.memoryUsage();
+  console.log(
+    "RAM:",
+    Math.round(mem.rss / 1024 / 1024) + "MB"
+  );
+}, 60000);
+
 const client = new Client({
   
   intents: [
