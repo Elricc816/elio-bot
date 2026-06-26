@@ -54,6 +54,20 @@ module.exports = {
     // =========================
     if (sub === "enable") {
 
+      const enabled = await db.get(`antinuke_${message.guild.id}`);
+
+      if (enabled) {
+  return message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#FF7F7F")
+        .setDescription(
+          "<:WarningIcon:1514708751385497721> Antinuke is already enabled."
+        )
+    ]
+  });
+      }
+
       const row = new ActionRowBuilder()
         .addComponents(
           new ButtonBuilder()
@@ -140,6 +154,18 @@ module.exports = {
     // ❌ DISABLE ANTINUKE (CONFIRMATION)
     // =========================
     if (sub === "disable") {
+
+      const enabled = await db.get(`antinuke_${message.guild.id}`);
+
+      if (!enabled) {
+  return message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#FF7F7F")
+        .setDescription("<:WarningIcon:1514708751385497721> Antinuke is already disabled.")
+    ]
+  });
+      }
 
       const row = new ActionRowBuilder()
         .addComponents(
