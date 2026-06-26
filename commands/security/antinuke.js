@@ -110,7 +110,7 @@ module.exports = {
                 .setColor("#57F287")
                 .setTitle("<:shield:1514699900225323108> Antinuke Enabled")
                 .setDescription(
-`<a:Animated_Tick:1514714209085292564> Antinuke has been **enabled successfully**.
+`<:shield:1514705361935012081> Antinuke has been **enabled successfully**.
 
 <:arrow:1514699753462566953> Your server is now protected.`
                 )
