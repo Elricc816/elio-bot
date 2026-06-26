@@ -79,14 +79,209 @@ if (sub === "enable") {
     components: [row]
   });
 
+  const confirmCollector = confirm.createMessageComponentCollector({
+    time: 60000
+  });
+
+  confirmCollector.on("collect", async (interaction) => {
+
+    if (interaction.user.id !== message.author.id) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#FF7F7F")
+            .setDescription(
+              "<a:spider_cross:1514728338701287640> This interaction isn't yours."
+            )
+        ],
+        ephemeral: true
+      });
+    }
+
+    if (interaction.customId === "antinuke_yes") {
+
+      await db.set(`antinuke_${message.guild.id}`, true);
+
+      return interaction.update({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#57F287")
+            .setTitle("<:shield:1514699900225323108> Antinuke Enabled")
+            .setDescription(
+`<a:Animated_Tick:1514714209085292564> Successfully enabled Antinuke for this server.`
+            )
+        ],
+        components: []
+      });
+    }
+
+    if (interaction.customId === "antinuke_no") {
+
+      return interaction.update({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#D3D3D3")
+            .setTitle("<:info:1514699288674828310> Action Cancelled")
+            .setDescription(
+`<a:spider_cross:1514728338701287640> Antinuke enabling has been cancelled.`
+            )
+        ],
+        components: []
+      });
+    }
+
+  });
+
   return;
 }
 
-if (sub === 'disable') {
+confirmCollector.on("collect", async interaction => {
 
-  await db.set(`antinuke_${message.guild.id}`, false);
+  if (interaction.user.id !== message.author.id) {
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#FF7F7F")
+          .setDescription(
+            "<a:spider_cross:1514728338701287640> This interaction isn't yours."
+          )
+      ],
+      ephemeral: true
+    });
+  }
 
-  return message.reply({
+  if (interaction.customId === "antinuke_yes") {
+
+    await db.set(`antinuke_${message.guild.id}`, true);
+
+    return interaction.update({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#57F287")
+          .setTitle("<:shield:1514699900225323108> Antinuke Enabled")
+          .setDescription(
+`<a:Animated_Tick:1514714209085292564> Successfully enabled Antinuke for this server.`
+          )
+      ],
+      components: []
+    });
+  }
+
+  if (interaction.customId === "antinuke_no") {
+
+    return interaction.update({
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#D3D3D3")
+          .setTitle("<:info:1514699288674828310> Action Cancelled")
+          .setDescription(
+`<a:spider_cross:1514728338701287640> Antinuke enabling has been cancelled.`
+          )
+      ],
+      components: []
+    });
+  }
+
+});
+  
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#D3D3D3")
+        .setTitle("<:shield:1514699900225323108> Antinuke Confirmation")
+        .setDescription(
+`<:WarningIcon:1514708751385497721> Are you sure you want to enable Antinuke in this server?
+
+<:arrow:1514699753462566953> This will enable Elio's antinuke protection.`
+        )
+    ],
+    components: [row]
+  });
+
+  return;
+}
+
+if (sub === "disable") {
+
+  const row = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("antinuke_disable_yes")
+        .setLabel("Yes")
+        .setEmoji("1514714209085292564")
+        .setStyle(ButtonStyle.Success),
+
+      new ButtonBuilder()
+        .setCustomId("antinuke_disable_no")
+        .setLabel("No")
+        .setEmoji("1514728338701287640")
+        .setStyle(ButtonStyle.Danger)
+    );
+
+  const confirm = await message.reply({
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#D3D3D3")
+        .setTitle("<:shield:1514699900225323108> Antinuke Confirmation")
+        .setDescription(
+`<:WarningIcon:1514708751385497721> Are you sure you want to disable Antinuke in this server?
+
+<:arrow:1514699753462566953> This will turn OFF server protection.`
+        )
+    ],
+    components: [row]
+  });
+
+  const collector = confirm.createMessageComponentCollector({
+    time: 60000
+  });
+
+  collector.on("collect", async (interaction) => {
+
+    if (interaction.user.id !== message.author.id) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#FF7F7F")
+            .setDescription("<a:spider_cross:1514728338701287640> This interaction isn't yours.")
+        ],
+        ephemeral: true
+      });
+    }
+
+    if (interaction.customId === "antinuke_disable_yes") {
+
+      await db.set(`antinuke_${message.guild.id}`, false);
+
+      return interaction.update({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#FF7F7F")
+            .setTitle("<:shield:1514699900225323108> Antinuke Disabled")
+            .setDescription(
+`<a:spider_cross:1514728338701287640> Antinuke has been disabled.`
+            )
+        ],
+        components: []
+      });
+    }
+
+    if (interaction.customId === "antinuke_disable_no") {
+
+      return interaction.update({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("#D3D3D3")
+            .setTitle("<:info:1514699288674828310> Cancelled")
+            .setDescription("Operation cancelled successfully.")
+        ],
+        components: []
+      });
+    }
+
+  });
+
+  return;
+}
     embeds: [
       new EmbedBuilder()
         .setColor('#FF7F7F')
