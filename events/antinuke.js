@@ -1,18 +1,13 @@
-const db = require('quick.db');
+const db = require('../database');
 const { EmbedBuilder } = require('discord.js');
 
 // =========================
 // WHITELIST FUNCTION
 // =========================
 async function isWhitelisted(db, guildId, userId) {
-  const list = (await db.get(`whitelist_${guildId}`)) || [];
+  const list = await db.get(`whitelist_${guildId}`) || [];
   return list.includes(userId);
 }
-
-// =========================
-// COOLDOWN (ANTI SPAM PROTECTION)
-// =========================
-const punishCooldown = new Map();
 
 module.exports = (client) => {
 
@@ -20,104 +15,80 @@ module.exports = (client) => {
   // CHANNEL DELETE PROTECTION
   // =========================
   client.on("channelDelete", async (channel) => {
-    try {
-      const guild = channel.guild;
-      if (!guild) return;
 
-      const status = await db.get(`antinuke_${guild.id}`);
-      if (!status) return;
+    const guild = channel.guild;
+    if (!guild) return;
 
-      const logs = await guild.fetchAuditLogs({ type: 12, limit: 1 });
-      const entry = logs.entries.first();
-      if (!entry) return;
+    const status = await db.get(`antinuke_${guild.id}`);
+    if (!status) return;
 
-      const user = entry.executor;
-      if (!user || user.bot) return;
+    const logs = await guild.fetchAuditLogs({ type: 12, limit: 1 });
+    const entry = logs.entries.first();
+    if (!entry) return;
 
-      const member = await guild.members.fetch(user.id).catch(() => null);
-      if (!member) return;
+    const user = entry.executor;
+    if (!user || user.bot) return;
 
-      // whitelist check AFTER validation
-      if (await isWhitelisted(db, guild.id, user.id)) return;
+    if (await isWhitelisted(db, guild.id, user.id)) return;
 
-      // anti spam protection
-      if (punishCooldown.has(user.id)) return;
-      punishCooldown.set(user.id, true);
-      setTimeout(() => punishCooldown.delete(user.id), 5000);
+    const member = await guild.members.fetch(user.id).catch(() => null);
+    if (!member) return;
 
-      await member.ban({ reason: "Antinuke | Channel Delete" }).catch(() => {});
-    } catch (err) {
-      console.error("ChannelDelete Antinuke Error:", err);
-    }
+    await member.ban({ reason: "Antinuke | Channel Delete" }).catch(() => {});
   });
 
   // =========================
   // ROLE DELETE PROTECTION
   // =========================
   client.on("roleDelete", async (role) => {
-    try {
-      const guild = role.guild;
-      if (!guild) return;
 
-      const status = await db.get(`antinuke_${guild.id}`);
-      if (!status) return;
+    const guild = role.guild;
+    if (!guild) return;
 
-      const logs = await guild.fetchAuditLogs({ type: 32, limit: 1 });
-      const entry = logs.entries.first();
-      if (!entry) return;
+    const status = await db.get(`antinuke_${guild.id}`);
+    if (!status) return;
 
-      const user = entry.executor;
-      if (!user || user.bot) return;
+    const logs = await guild.fetchAuditLogs({ type: 32, limit: 1 });
+    const entry = logs.entries.first();
+    if (!entry) return;
 
-      const member = await guild.members.fetch(user.id).catch(() => null);
-      if (!member) return;
+    const user = entry.executor;
+    if (!user || user.bot) return;
 
-      if (await isWhitelisted(db, guild.id, user.id)) return;
+    if (await isWhitelisted(db, guild.id, user.id)) return;
 
-      if (punishCooldown.has(user.id)) return;
-      punishCooldown.set(user.id, true);
-      setTimeout(() => punishCooldown.delete(user.id), 5000);
+    const member = await guild.members.fetch(user.id).catch(() => null);
+    if (!member) return;
 
-      await member.ban({ reason: "Antinuke | Role Delete" }).catch(() => {});
-    } catch (err) {
-      console.error("RoleDelete Antinuke Error:", err);
-    }
+    await member.ban({ reason: "Antinuke | Role Delete" }).catch(() => {});
   });
 
   // =========================
   // BOT ADD PROTECTION
   // =========================
   client.on("guildMemberAdd", async (member) => {
-    try {
-      const guild = member.guild;
-      if (!guild) return;
 
-      if (!member.user.bot) return;
+    const guild = member.guild;
 
-      const status = await db.get(`antinuke_${guild.id}`);
-      if (!status) return;
+    const status = await db.get(`antinuke_${guild.id}`);
+    if (!status) return;
 
-      const logs = await guild.fetchAuditLogs({ type: 28, limit: 1 });
-      const entry = logs.entries.first();
-      if (!entry) return;
+    if (!member.user.bot) return;
 
-      const user = entry.executor;
-      if (!user || user.bot) return;
+    const logs = await guild.fetchAuditLogs({ type: 28, limit: 1 });
+    const entry = logs.entries.first();
+    if (!entry) return;
 
-      const admin = await guild.members.fetch(user.id).catch(() => null);
-      if (!admin) return;
+    const user = entry.executor;
+    if (!user || user.bot) return;
 
-      if (await isWhitelisted(db, guild.id, user.id)) return;
+    if (await isWhitelisted(db, guild.id, user.id)) return;
 
-      if (punishCooldown.has(user.id)) return;
-      punishCooldown.set(user.id, true);
-      setTimeout(() => punishCooldown.delete(user.id), 5000);
+    const admin = await guild.members.fetch(user.id).catch(() => null);
+    if (!admin) return;
 
-      await admin.ban({ reason: "Antinuke | Unauthorized Bot Added" }).catch(() => {});
-      await member.kick().catch(() => {});
-    } catch (err) {
-      console.error("GuildMemberAdd Antinuke Error:", err);
-    }
+    await admin.ban({ reason: "Antinuke | Unauthorized Bot Added" }).catch(() => {});
+    await member.kick().catch(() => {});
   });
 
 };
