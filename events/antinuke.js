@@ -1,6 +1,14 @@
 const db = require('../database');
 const { EmbedBuilder } = require('discord.js');
 
+// =========================
+// WHITELIST FUNCTION
+// =========================
+async function isWhitelisted(db, guildId, userId) {
+  const list = await db.get(`whitelist_${guildId}`) || [];
+  return list.includes(userId);
+}
+
 module.exports = (client) => {
 
   // =========================
@@ -20,6 +28,9 @@ module.exports = (client) => {
 
     const user = entry.executor;
     if (!user || user.bot) return;
+
+    // ✅ WHITELIST CHECK (CORRECT PLACE)
+    if (await isWhitelisted(db, guild.id, user.id)) return;
 
     const member = await guild.members.fetch(user.id).catch(() => null);
     if (!member) return;
@@ -45,6 +56,9 @@ module.exports = (client) => {
     const user = entry.executor;
     if (!user || user.bot) return;
 
+    // ✅ WHITELIST CHECK
+    if (await isWhitelisted(db, guild.id, user.id)) return;
+
     const member = await guild.members.fetch(user.id).catch(() => null);
     if (!member) return;
 
@@ -69,6 +83,9 @@ module.exports = (client) => {
 
     const user = entry.executor;
     if (!user || user.bot) return;
+
+    // ✅ WHITELIST CHECK
+    if (await isWhitelisted(db, guild.id, user.id)) return;
 
     const admin = await guild.members.fetch(user.id).catch(() => null);
     if (!admin) return;
