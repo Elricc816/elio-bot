@@ -55,13 +55,11 @@ if (sub === "enable") {
       new ButtonBuilder()
         .setCustomId("antinuke_yes")
         .setLabel("Yes")
-        .setEmoji("1514714209085292564")
         .setStyle(ButtonStyle.Success),
 
       new ButtonBuilder()
         .setCustomId("antinuke_no")
         .setLabel("No")
-        .setEmoji("1514728338701287640")
         .setStyle(ButtonStyle.Danger)
     );
 
@@ -69,30 +67,24 @@ if (sub === "enable") {
     embeds: [
       new EmbedBuilder()
         .setColor("#D3D3D3")
-        .setTitle("<:shield:1514699900225323108> Antinuke Confirmation")
-        .setDescription(
-`<:WarningIcon:1514708751385497721> Are you sure you want to enable Antinuke in this server?
-
-<:arrow:1514699753462566953> This will enable Elio's antinuke protection.`
-        )
+        .setTitle("Antinuke Enable?")
+        .setDescription("Are you sure you want to ENABLE antinuke?")
     ],
     components: [row]
   });
 
-  const confirmCollector = confirm.createMessageComponentCollector({
+  const collector = confirm.createMessageComponentCollector({
     time: 60000
   });
 
-  confirmCollector.on("collect", async (interaction) => {
+  collector.on("collect", async (interaction) => {
 
     if (interaction.user.id !== message.author.id) {
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor("#FF7F7F")
-            .setDescription(
-              "<a:spider_cross:1514728338701287640> This interaction isn't yours."
-            )
+            .setDescription("Not your button")
         ],
         ephemeral: true
       });
@@ -106,10 +98,7 @@ if (sub === "enable") {
         embeds: [
           new EmbedBuilder()
             .setColor("#57F287")
-            .setTitle("<:shield:1514699900225323108> Antinuke Enabled")
-            .setDescription(
-`<a:Animated_Tick:1514714209085292564> Successfully enabled Antinuke for this server.`
-            )
+            .setDescription("Antinuke Enabled ✅")
         ],
         components: []
       });
@@ -121,10 +110,7 @@ if (sub === "enable") {
         embeds: [
           new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("<:info:1514699288674828310> Action Cancelled")
-            .setDescription(
-`<a:spider_cross:1514728338701287640> Antinuke enabling has been cancelled.`
-            )
+            .setDescription("Cancelled ❌")
         ],
         components: []
       });
@@ -207,13 +193,11 @@ if (sub === "disable") {
       new ButtonBuilder()
         .setCustomId("antinuke_disable_yes")
         .setLabel("Yes")
-        .setEmoji("1514714209085292564")
         .setStyle(ButtonStyle.Success),
 
       new ButtonBuilder()
         .setCustomId("antinuke_disable_no")
         .setLabel("No")
-        .setEmoji("1514728338701287640")
         .setStyle(ButtonStyle.Danger)
     );
 
@@ -221,12 +205,8 @@ if (sub === "disable") {
     embeds: [
       new EmbedBuilder()
         .setColor("#D3D3D3")
-        .setTitle("<:shield:1514699900225323108> Antinuke Confirmation")
-        .setDescription(
-`<:WarningIcon:1514708751385497721> Are you sure you want to disable Antinuke in this server?
-
-<:arrow:1514699753462566953> This will turn OFF server protection.`
-        )
+        .setTitle("Disable Antinuke?")
+        .setDescription("Are you sure you want to DISABLE antinuke?")
     ],
     components: [row]
   });
@@ -242,7 +222,7 @@ if (sub === "disable") {
         embeds: [
           new EmbedBuilder()
             .setColor("#FF7F7F")
-            .setDescription("<a:spider_cross:1514728338701287640> This interaction isn't yours.")
+            .setDescription("Not your button")
         ],
         ephemeral: true
       });
@@ -256,10 +236,7 @@ if (sub === "disable") {
         embeds: [
           new EmbedBuilder()
             .setColor("#FF7F7F")
-            .setTitle("<:shield:1514699900225323108> Antinuke Disabled")
-            .setDescription(
-`<a:spider_cross:1514728338701287640> Antinuke has been disabled.`
-            )
+            .setDescription("Antinuke Disabled ❌")
         ],
         components: []
       });
@@ -271,8 +248,7 @@ if (sub === "disable") {
         embeds: [
           new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("<:info:1514699288674828310> Cancelled")
-            .setDescription("Operation cancelled successfully.")
+            .setDescription("Cancelled")
         ],
         components: []
       });
@@ -281,7 +257,8 @@ if (sub === "disable") {
   });
 
   return;
-}
+        }
+
     embeds: [
       new EmbedBuilder()
         .setColor('#FF7F7F')
