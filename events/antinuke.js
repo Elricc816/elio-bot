@@ -1,4 +1,4 @@
-const db = require('../database');
+const db = require('quick.db');
 const { EmbedBuilder } = require('discord.js');
 
 // =========================
