@@ -35,6 +35,21 @@ const client = new Client({
 
 client.commands = new Collection();
 
+// =========================
+// EVENT LOADER (ADD THIS)
+// =========================
+const eventPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+  const filePath = path.join(eventPath, file);
+  const event = require(filePath);
+
+  if (typeof event === "function") {
+    event(client);
+  }
+}
+
 const prefix = ',';
 
 // Load all commands from folders
@@ -59,7 +74,6 @@ client.once('ready', () => {
   console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
   const statuses = [
-    'Elric on Top',
     'Nukes? Not Today.',
     'Protecting Servers.',
     ',help | Security for Your Server.',
