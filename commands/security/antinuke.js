@@ -48,20 +48,38 @@ module.exports = {
     }, cooldownTime);
     const sub = args[0]?.toLowerCase();
 
-if (sub === 'enable') {
+if (sub === "enable") {
 
-  await db.set(`antinuke_${message.guild.id}`, true);
+  const row = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("antinuke_yes")
+        .setLabel("Yes")
+        .setEmoji("1514714209085292564")
+        .setStyle(ButtonStyle.Success),
 
-  return message.reply({
+      new ButtonBuilder()
+        .setCustomId("antinuke_no")
+        .setLabel("No")
+        .setEmoji("1514728338701287640")
+        .setStyle(ButtonStyle.Danger)
+    );
+
+  const confirm = await message.reply({
     embeds: [
       new EmbedBuilder()
-        .setColor('#57F287')
+        .setColor("#D3D3D3")
+        .setTitle("<:shield:1514699900225323108> Antinuke Confirmation")
         .setDescription(
-          '<:shield:1514705361935012081> Antinuke has been enabled successfully.'
+`<:WarningIcon:1514708751385497721> Are you sure you want to enable Antinuke in this server?
+
+<:arrow:1514699753462566953> This will enable Elio's antinuke protection.`
         )
-    ]
+    ],
+    components: [row]
   });
 
+  return;
 }
 
 if (sub === 'disable') {
