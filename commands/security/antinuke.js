@@ -65,7 +65,7 @@ embeds: [
 new EmbedBuilder()
 .setColor("#FFCC66")
 .setDescription(
-`<:WarningIcon:1514708751385497721> Antinuke is already enabled.
+`<:WarningIcon:1514708751385497721> Antinuke is already enabled in this server.
 
 Use \`,antinuke manage\` to edit settings.`
 )
@@ -75,24 +75,24 @@ Use \`,antinuke manage\` to edit settings.`
 
 // DEFAULT FILTERS
 const filters = {
-ban:true,
-kick:true,
-botadd:true,
-channeldelete:true,
-roledelete:true,
-guildupdate:true,
-webhook:true,
-mention:true
+ban: true,
+kick: true,
+botadd: true,
+channeldelete: true,
+roledelete: true,
+guildupdate: true,
+webhook: true,
+mention: true
 };
 
 // =========================
-// EMBED UI
+// SETUP EMBED
 // =========================
 const embed = new EmbedBuilder()
 .setColor("#D3D3D3")
 .setTitle("<:shield:1514699900225323108> Antinuke Setup")
 .setDescription(
-`Configure protection before enabling Antinuke.
+`Configure your server protection before enabling Antinuke.
 
 <:on:1520340385451347968> Ban
 <:on:1520340385451347968> Kick
@@ -109,16 +109,16 @@ const embed = new EmbedBuilder()
 // =========================
 const menu = new StringSelectMenuBuilder()
 .setCustomId("antinuke_menu")
-.setPlaceholder("Select protection to toggle")
+.setPlaceholder("Toggle protections")
 .addOptions([
-{label:"Ban Protection",value:"ban"},
-{label:"Kick Protection",value:"kick"},
-{label:"Bot Add Protection",value:"botadd"},
-{label:"Channel Delete",value:"channeldelete"},
-{label:"Role Delete",value:"roledelete"},
-{label:"Guild Update",value:"guildupdate"},
-{label:"Webhook",value:"webhook"},
-{label:"Mention Spam",value:"mention"}
+{label:"Ban", value:"ban"},
+{label:"Kick", value:"kick"},
+{label:"Bot Add", value:"botadd"},
+{label:"Channel Delete", value:"channeldelete"},
+{label:"Role Delete", value:"roledelete"},
+{label:"Guild Update", value:"guildupdate"},
+{label:"Webhook", value:"webhook"},
+{label:"Mention Spam", value:"mention"}
 ]);
 
 // =========================
@@ -142,11 +142,11 @@ buttons
 ];
 
 // =========================
-// SEND PANEL
+// PANEL
 // =========================
 const panel = await message.reply({
-embeds:[embed],
-components:rows
+embeds: [embed],
+components: rows
 });
 
 // =========================
@@ -161,8 +161,8 @@ collector.on("collect", async interaction => {
 
 if (interaction.user.id !== message.author.id) {
 return interaction.reply({
-content:"This menu isn't yours.",
-ephemeral:true
+content: "This menu isn't yours.",
+ephemeral: true
 });
 }
 
@@ -171,7 +171,7 @@ const value = interaction.values[0];
 filters[value] = !filters[value];
 
 embed.setDescription(
-`Configure protection before enabling Antinuke.
+`Configure your server protection before enabling Antinuke.
 
 ${filters.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban
 ${filters.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick
@@ -184,8 +184,8 @@ ${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} 
 );
 
 await interaction.update({
-embeds:[embed],
-components:rows
+embeds: [embed],
+components: rows
 });
 
 });
@@ -202,30 +202,31 @@ buttonCollector.on("collect", async interaction => {
 
 if (interaction.user.id !== message.author.id) {
 return interaction.reply({
-content:"This menu isn't yours.",
-ephemeral:true
+content: "This menu isn't yours.",
+ephemeral: true
 });
 }
 
+// CANCEL
 if (interaction.customId === "cancel") {
-
 return interaction.update({
-embeds:[
+embeds: [
 new EmbedBuilder()
 .setColor("#D3D3D3")
 .setDescription("<a:spider_cross:1514728338701287640> Setup cancelled.")
 ],
-components:[]
+components: []
 });
 }
 
+// SAVE
 if (interaction.customId === "save") {
 
 await db.set(`antinuke_${message.guild.id}`, true);
 await db.set(`antinuke_filters_${message.guild.id}`, filters);
 
 return interaction.update({
-embeds:[
+embeds: [
 new EmbedBuilder()
 .setColor("#57F287")
 .setTitle("<:shield:1514699900225323108> Antinuke Enabled")
@@ -235,7 +236,7 @@ new EmbedBuilder()
 <:arrow:1514699753462566953> Your server is now protected.`
 )
 ],
-components:[]
+components: []
 });
 }
 
@@ -252,16 +253,16 @@ if (sub === "disable") {
 await db.set(`antinuke_${message.guild.id}`, false);
 
 return message.reply({
-embeds:[
+embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription("<:shield:1514699900225323108> Antinuke disabled.")
+.setDescription("<:shield:1514699900225323108> Antinuke disabled in this server.")
 ]
 });
 }
 
 // =========================
-// MANAGE (PLACEHOLDER)
+// MANAGE
 // =========================
 if (sub === "manage") {
 
@@ -269,19 +270,20 @@ const enabled = await db.get(`antinuke_${message.guild.id}`);
 
 if (!enabled) {
 return message.reply({
-embeds:[
+embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription("<:WarningIcon:1514708751385497721> Antinuke is not enabled in this server.")
+.setDescription("<:WarningIcon:1514708751385497721> Antinuke is disabled in this server.")
 ]
 });
 }
 
+// reopen same system
 return message.reply({
-embeds:[
+embeds: [
 new EmbedBuilder()
 .setColor("#D3D3D3")
-.setDescription("Use `,antinuke enable` to edit settings again.")
+.setDescription("Use `,antinuke enable` to edit settings.")
 ]
 });
 }
