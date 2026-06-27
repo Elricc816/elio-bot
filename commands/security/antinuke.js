@@ -52,6 +52,95 @@ cooldown.delete(message.author.id);
 
 const sub = args[0]?.toLowerCase();
 
+  if (!sub) {
+
+const embed = new EmbedBuilder()
+.setColor('#d3d3d3')
+.setTitle('<:shield:1514699900225323108> Antinuke System')
+.setDescription(
+`<a:MekoLoading:1514728537452708022> **Available Antinuke Commands [15]**
+
+,antinuke enable
+> Enable and configure antinuke protection.
+
+,antinuke disable
+> Disable server protection.
+
+,antinuke autorecovery
+> Manage server autorecovery settings.
+
+,antinuke betrayalguard
+> Enable or disable betrayal guard.
+
+,antinuke limit
+> Set security limits.
+
+,antinuke logging
+> Set antinuke log channel.
+
+,antinuke manage
+> Manage all settings.
+
+,antinuke reset
+> Reset all data.
+
+,antinuke whitelist
+> Manage whitelist users.
+
+,antinuke trustlimit
+> Set trusted limits.
+
+,antinuke wallon / walloff
+> Toggle wall protection.
+
+,antinuke wizard
+> One-click setup.
+
+,antinuke zplus
+> Advanced protection system.`
+)
+.setFooter({
+text: `Requested by ${message.author.username}`
+});
+
+const row = new ActionRowBuilder()
+.addComponents(
+new ButtonBuilder()
+.setCustomId('delete')
+.setEmoji('🗑️')
+.setStyle(ButtonStyle.Danger)
+);
+
+const msg = await message.reply({
+embeds: [embed],
+components: [row]
+});
+
+const collector = msg.createMessageComponentCollector({
+time: 300000
+});
+
+collector.on('collect', async interaction => {
+
+if (interaction.user.id !== message.author.id) {
+return interaction.reply({
+embeds: [
+new EmbedBuilder()
+.setColor('#FF7F7F')
+.setDescription("<a:spider_cross:1514728338701287640> This menu isn't yours.")
+],
+ephemeral: true
+});
+}
+
+if (interaction.customId === 'delete') {
+return msg.delete().catch(() => {});
+}
+
+});
+return;
+  }
+
 // =========================
 // ENABLE
 // =========================
