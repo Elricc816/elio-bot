@@ -357,9 +357,6 @@ if (sub === "manage") {
 
 const enabled = await db.get(`antinuke_${message.guild.id}`);
 
-// =========================
-// CASE 1: DISABLED
-// =========================
 if (!enabled) {
 return message.reply({
 embeds: [
@@ -370,11 +367,16 @@ new EmbedBuilder()
 });
 }
 
-// =========================
-// CASE 2: ENABLED (SHOW DROPDOWN UI)
-// =========================
-
-const filters = await db.get(`antinuke_filters_${message.guild.id}`) || {};
+const filters = await db.get(`antinuke_filters_${message.guild.id}`) || {
+ban: true,
+kick: true,
+botadd: true,
+channeldelete: true,
+roledelete: true,
+guildupdate: true,
+webhook: true,
+mention: true
+};
 
 const embed = new EmbedBuilder()
 .setColor("#D3D3D3")
@@ -390,20 +392,109 @@ ${filters.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} 
 ${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
 );
 
-return message.reply({
+const menu = new StringSelectMenuBuilder()
+.setCustomId("antinuke_menu")
+.setPlaceholder("Toggle protections")
+.addOptions([
+{label:"Ban", value:"ban"},
+{label:"Kick", value:"kick"},
+{label:"Bot Add", value:"botadd"},
+{label:"Channel Delete", value:"channeldelete"},
+{label:"Role Delete", value:"roledelete"},
+{label:"Guild Update", value:"guildupdate"},
+{label:"Webhook", value:"webhook"},
+{label:"Mention Spam", value:"mention"}
+]);
+
+const buttons = new ActionRowBuilder().addComponents(
+new ButtonBuilder()
+.setCustomId("save")
+.setLabel("Save")
+.setStyle(ButtonStyle.Success),
+
+new ButtonBuilder()
+.setCustomId("cancel")
+.setLabel("Cancel")
+.setStyle(ButtonStyle.Danger)
+);
+
+const rows = [
+new ActionRowBuilder().addComponents(menu),
+buttons
+];
+
+const panel = await message.reply({
 embeds: [embed],
 components: rows
 });
-}
-// reopen same system
-return message.reply({
+
+const collector = panel.createMessageComponentCollector({
+componentType: ComponentType.StringSelect,
+time: 300000
+});
+
+collector.on("collect", async interaction => {
+
+if (interaction.user.id !== message.author.id)
+return interaction.reply({ content: "This menu isn't yours.", ephemeral: true });
+
+const value = interaction.values[0];
+filters[value] = !filters[value];
+
+embed.setDescription(
+`${filters.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban
+${filters.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick
+${filters.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Add
+${filters.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
+${filters.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
+${filters.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
+${filters.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
+${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
+);
+
+await interaction.update({
+embeds: [embed],
+components: rows
+});
+
+});
+
+const buttonCollector = panel.createMessageComponentCollector({
+componentType: ComponentType.Button,
+time: 300000
+});
+
+buttonCollector.on("collect", async interaction => {
+
+if (interaction.user.id !== message.author.id)
+return interaction.reply({ content: "This menu isn't yours.", ephemeral: true });
+
+if (interaction.customId === "cancel") {
+return interaction.update({
 embeds: [
 new EmbedBuilder()
 .setColor("#D3D3D3")
-.setDescription("Use `,antinuke enable` to edit settings.")
-]
+.setDescription("<a:spider_cross:1514728338701287640> Changes cancelled.")
+],
+components: []
 });
 }
 
+if (interaction.customId === "save") {
+
+await db.set(`antinuke_filters_${message.guild.id}`, filters);
+
+return interaction.update({
+embeds: [
+new EmbedBuilder()
+.setColor("#57F287")
+.setDescription("<a:Animated_Tick:1514714209085292564> Antinuke settings updated successfully.")
+],
+components: []
+});
 }
-};
+
+});
+
+return;
+}
