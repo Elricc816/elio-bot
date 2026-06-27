@@ -357,6 +357,9 @@ if (sub === "manage") {
 
 const enabled = await db.get(`antinuke_${message.guild.id}`);
 
+// =========================
+// CASE 1: DISABLED
+// =========================
 if (!enabled) {
 return message.reply({
 embeds: [
@@ -367,6 +370,31 @@ new EmbedBuilder()
 });
 }
 
+// =========================
+// CASE 2: ENABLED (SHOW DROPDOWN UI)
+// =========================
+
+const filters = await db.get(`antinuke_filters_${message.guild.id}`) || {};
+
+const embed = new EmbedBuilder()
+.setColor("#D3D3D3")
+.setTitle("<:shield:1514699900225323108> Antinuke Manage Panel")
+.setDescription(
+`${filters.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban
+${filters.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick
+${filters.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Add
+${filters.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
+${filters.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
+${filters.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
+${filters.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
+${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
+);
+
+return message.reply({
+embeds: [embed],
+components: rows
+});
+}
 // reopen same system
 return message.reply({
 embeds: [
