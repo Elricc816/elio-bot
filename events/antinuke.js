@@ -2,7 +2,7 @@ const db = require('../database');
 const { EmbedBuilder } = require('discord.js');
 
 // =========================
-// WHITELIST FUNCTION
+// WHITELIST CHECK
 // =========================
 async function isWhitelisted(db, guildId, userId) {
   const list = await db.get(`whitelist_${guildId}`) || [];
@@ -12,15 +12,15 @@ async function isWhitelisted(db, guildId, userId) {
 module.exports = (client) => {
 
   // =========================
-  // CHANNEL DELETE PROTECTION
+  // CHANNEL DELETE
   // =========================
   client.on("channelDelete", async (channel) => {
 
     const guild = channel.guild;
     if (!guild) return;
 
-    const status = await db.get(`antinuke_${guild.id}`);
-    if (!status) return;
+    const enabled = await db.get(`antinuke_${guild.id}`);
+    if (!enabled) return;
 
     const logs = await guild.fetchAuditLogs({ type: 12, limit: 1 });
     const entry = logs.entries.first();
@@ -38,15 +38,15 @@ module.exports = (client) => {
   });
 
   // =========================
-  // ROLE DELETE PROTECTION
+  // ROLE DELETE
   // =========================
   client.on("roleDelete", async (role) => {
 
     const guild = role.guild;
     if (!guild) return;
 
-    const status = await db.get(`antinuke_${guild.id}`);
-    if (!status) return;
+    const enabled = await db.get(`antinuke_${guild.id}`);
+    if (!enabled) return;
 
     const logs = await guild.fetchAuditLogs({ type: 32, limit: 1 });
     const entry = logs.entries.first();
@@ -64,14 +64,14 @@ module.exports = (client) => {
   });
 
   // =========================
-  // BOT ADD PROTECTION
+  // BOT ADD
   // =========================
   client.on("guildMemberAdd", async (member) => {
 
     const guild = member.guild;
 
-    const status = await db.get(`antinuke_${guild.id}`);
-    if (!status) return;
+    const enabled = await db.get(`antinuke_${guild.id}`);
+    if (!enabled) return;
 
     if (!member.user.bot) return;
 
