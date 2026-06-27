@@ -33,7 +33,7 @@ return message.reply({
 embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription(`<:off:1520340423829098597> Cooldown \`${timeLeft}s\``)
+.setDescription("Cooldown `" + timeLeft + "s`")
 ]
 });
 }
@@ -50,35 +50,101 @@ return message.reply({
 embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> You need Administrator permission.")
+.setDescription("You need Administrator permission.")
 ]
 });
 }
 
 // =========================
-// HELP MENU (THIS FIXES YOUR ISSUE)
+// HELP MENU (FULL COMMAND LIST)
 // =========================
 if (!sub) {
 
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#D3D3D3")
-.setTitle("<:on:1520340385451347968> Antinuke System")
+const embed = new EmbedBuilder()
+.setColor('#d3d3d3')
+.setTitle('<:shield:1514699900225323108> Antinuke System')
 .setDescription(
-`<a:MekoLoading:1514728537452708022> **Available Commands**
+`<a:MekoLoading:1514728537452708022> **Available Antinuke Commands [13]**
 
 ,antinuke enable
-,antinuke disable
-,antinuke manage
+> Enable and configure antinuke protection.
 
-<:on:1520340385451347968> Enable protection system
-<:off:1520340423829098597> Disable protection system
-<:on:1520340385451347968> View & edit settings`
+,antinuke disable
+> Disable server protection.
+
+,antinuke autorecovery
+> Manage server autorecovery settings.
+
+,antinuke betrayalguard
+> Enable or disable betrayal guard.
+
+,antinuke limit
+> Set security limits.
+
+,antinuke logging
+> Set antinuke log channel.
+
+,antinuke manage
+> Manage all settings.
+
+,antinuke reset
+> Reset all data.
+
+,antinuke whitelist
+> Manage whitelist users.
+
+,antinuke trustlimit
+> Set trusted limits.
+
+,antinuke wallon / walloff
+> Toggle wall protection.
+
+,antinuke wizard
+> One-click setup.
+
+,antinuke zplus
+> Advanced protection system.`
 )
-.setFooter({ text: `Requested by ${message.author.username}` }
-)]
+.setFooter({
+text: `Requested by ${message.author.username}`
 });
+
+const row = new ActionRowBuilder().addComponents(
+new ButtonBuilder()
+.setCustomId("delete")
+.setEmoji("🗑️")
+.setStyle(ButtonStyle.Danger)
+);
+
+const msg = await message.reply({
+embeds: [embed],
+components: [row]
+});
+
+const collector = msg.createMessageComponentCollector({
+time: 300000
+});
+
+collector.on("collect", async (interaction) => {
+
+if (interaction.user.id !== message.author.id) {
+return interaction.reply({
+embeds: [
+new EmbedBuilder()
+.setColor("#FF7F7F")
+.setDescription("This menu isn't yours.")
+],
+ephemeral: true
+});
+}
+
+if (interaction.customId === "delete") {
+return msg.delete().catch(() => {});
+}
+
+});
+
+return;
 }
 
 // =========================
@@ -93,12 +159,11 @@ return message.reply({
 embeds: [
 new EmbedBuilder()
 .setColor("#FFCC66")
-.setDescription("<:off:1520340423829098597> Antinuke is already ENABLED.\nUse `,antinuke manage` to edit settings.")
+.setDescription("Antinuke is already enabled. Use `,antinuke manage`.")
 ]
 });
 }
 
-// default filters
 let filters = {
 ban: true,
 kick: true,
@@ -112,29 +177,14 @@ mention: true
 
 await db.set(`antinuke_filters_${message.guild.id}`, filters);
 
-// =========================
-// PREMIUM EMBED
-// =========================
 const embed = new EmbedBuilder()
 .setColor("#D3D3D3")
-.setTitle("<:on:1520340385451347968> Antinuke Control Panel")
-.setDescription(
-`Configure your server protection:
+.setTitle("Antinuke Setup Panel")
+.setDescription("Select protections below and press Save.");
 
-${filters.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban
-${filters.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick
-${filters.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Add
-${filters.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
-${filters.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
-${filters.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
-${filters.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
-${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
-);
-
-// dropdown
 const menu = new StringSelectMenuBuilder()
 .setCustomId("antinuke_menu")
-.setPlaceholder("Toggle protection")
+.setPlaceholder("Toggle protections")
 .addOptions([
 { label: "Ban", value: "ban" },
 { label: "Kick", value: "kick" },
@@ -151,7 +201,7 @@ const row1 = new ActionRowBuilder().addComponents(menu);
 const row2 = new ActionRowBuilder().addComponents(
 new ButtonBuilder()
 .setCustomId("save")
-.setLabel("Save Settings")
+.setLabel("Save")
 .setStyle(ButtonStyle.Success),
 
 new ButtonBuilder()
@@ -165,9 +215,6 @@ embeds: [embed],
 components: [row1, row2]
 });
 
-// =========================
-// SELECT MENU COLLECTOR
-// =========================
 const collector = msg.createMessageComponentCollector({
 componentType: ComponentType.StringSelect,
 time: 300000
@@ -176,10 +223,7 @@ time: 300000
 collector.on("collect", async (interaction) => {
 
 if (interaction.user.id !== message.author.id) {
-return interaction.reply({
-content: "<:off:1520340423829098597> This menu isn't yours.",
-ephemeral: true
-});
+return interaction.reply({ content: "Not yours", ephemeral: true });
 }
 
 let filtersDB = await db.get(`antinuke_filters_${message.guild.id}`) || filters;
@@ -189,41 +233,21 @@ filtersDB[value] = !filtersDB[value];
 
 await db.set(`antinuke_filters_${message.guild.id}`, filtersDB);
 
-// update embed
-embed.setDescription(
-`Configure your server protection:
-
-${filtersDB.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban
-${filtersDB.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick
-${filtersDB.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Add
-${filtersDB.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
-${filtersDB.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
-${filtersDB.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
-${filtersDB.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
-${filtersDB.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
-);
-
 await interaction.update({
 embeds: [embed],
 components: [row1, row2]
 });
 });
 
-// =========================
-// BUTTON COLLECTOR
-// =========================
-const buttonCollector = msg.createMessageComponentCollector({
+const btn = msg.createMessageComponentCollector({
 componentType: ComponentType.Button,
 time: 300000
 });
 
-buttonCollector.on("collect", async (interaction) => {
+btn.on("collect", async (interaction) => {
 
 if (interaction.user.id !== message.author.id) {
-return interaction.reply({
-content: "<:off:1520340423829098597> This interaction isn't yours.",
-ephemeral: true
-});
+return interaction.reply({ content: "Not yours", ephemeral: true });
 }
 
 if (interaction.customId === "cancel") {
@@ -238,17 +262,19 @@ return interaction.update({
 embeds: [
 new EmbedBuilder()
 .setColor("#57F287")
-.setTitle("<:on:1520340385451347968> Antinuke Enabled")
-.setDescription("Settings saved successfully.\nYour server is now protected.")
+.setTitle("Antinuke Enabled")
+.setDescription("Settings saved. Server protected.")
 ],
 components: []
 });
 }
 });
+
+return;
 }
 
 // =========================
-// DISABLE
+// DISABLE (WITH CONFIRMATION)
 // =========================
 if (sub === "disable") {
 
@@ -259,56 +285,139 @@ return message.reply({
 embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> Antinuke is already DISABLED.")
+.setDescription("Antinuke is already disabled.")
 ]
 });
 }
+
+const row = new ActionRowBuilder().addComponents(
+new ButtonBuilder()
+.setCustomId("yes_disable")
+.setLabel("Yes")
+.setStyle(ButtonStyle.Danger),
+
+new ButtonBuilder()
+.setCustomId("no_disable")
+.setLabel("No")
+.setStyle(ButtonStyle.Secondary)
+);
+
+const msg = await message.reply({
+embeds: [
+new EmbedBuilder()
+.setColor("#FFCC66")
+.setDescription("Are you sure you want to disable Antinuke?")
+],
+components: [row]
+});
+
+const collector = msg.createMessageComponentCollector({
+componentType: ComponentType.Button,
+time: 30000
+});
+
+collector.on("collect", async (interaction) => {
+
+if (interaction.user.id !== message.author.id) {
+return interaction.reply({ content: "Not yours", ephemeral: true });
+}
+
+if (interaction.customId === "no_disable") {
+return msg.delete().catch(() => {});
+}
+
+if (interaction.customId === "yes_disable") {
 
 await db.delete(`antinuke_${message.guild.id}`);
 await db.delete(`antinuke_filters_${message.guild.id}`);
 
-return message.reply({
+return interaction.update({
 embeds: [
 new EmbedBuilder()
 .setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> Antinuke has been disabled.")
-]
+.setDescription("Antinuke disabled.")
+],
+components: []
 });
+}
+});
+
+return;
 }
 
 // =========================
-// MANAGE
+// MANAGE (WITH DROPDOWN)
 // =========================
 if (sub === "manage") {
 
 const enabled = await db.get(`antinuke_${message.guild.id}`);
 
 if (!enabled) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> Antinuke is not enabled in this server.")
-]
-});
+return message.reply("Antinuke is not enabled.");
 }
 
-const filters = await db.get(`antinuke_filters_${message.guild.id}`) || {};
+let filters = await db.get(`antinuke_filters_${message.guild.id}`) || {};
 
-return message.reply({
-embeds: [
-new EmbedBuilder()
+const embed = new EmbedBuilder()
 .setColor("#D3D3D3")
-.setTitle("<:on:1520340385451347968> Antinuke Settings")
+.setTitle("Antinuke Settings")
 .setDescription(
-Object.entries(filters)
-.map(([k,v]) =>
-`${v ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} ${k}`
-)
-.join("\n")
-)
-]
+`${filters.ban ? "🟢" : "🔴"} Ban\n` +
+`${filters.kick ? "🟢" : "🔴"} Kick\n` +
+`${filters.botadd ? "🟢" : "🔴"} Bot Add\n` +
+`${filters.channeldelete ? "🟢" : "🔴"} Channel Delete\n` +
+`${filters.roledelete ? "🟢" : "🔴"} Role Delete\n` +
+`${filters.guildupdate ? "🟢" : "🔴"} Guild Update\n` +
+`${filters.webhook ? "🟢" : "🔴"} Webhook\n` +
+`${filters.mention ? "🟢" : "🔴"} Mention Spam`
+);
+
+const menu = new StringSelectMenuBuilder()
+.setCustomId("manage_menu")
+.setPlaceholder("Toggle settings")
+.addOptions([
+{ label: "Ban", value: "ban" },
+{ label: "Kick", value: "kick" },
+{ label: "Bot Add", value: "botadd" },
+{ label: "Channel Delete", value: "channeldelete" },
+{ label: "Role Delete", value: "roledelete" },
+{ label: "Guild Update", value: "guildupdate" },
+{ label: "Webhook", value: "webhook" },
+{ label: "Mention", value: "mention" }
+]);
+
+const row = new ActionRowBuilder().addComponents(menu);
+
+const msg = await message.reply({
+embeds: [embed],
+components: [row]
 });
+
+const collector = msg.createMessageComponentCollector({
+componentType: ComponentType.StringSelect,
+time: 300000
+});
+
+collector.on("collect", async (interaction) => {
+
+if (interaction.user.id !== message.author.id) {
+return interaction.reply({ content: "Not yours", ephemeral: true });
+}
+
+let data = await db.get(`antinuke_filters_${message.guild.id}`) || {};
+
+const value = interaction.values[0];
+data[value] = !data[value];
+
+await db.set(`antinuke_filters_${message.guild.id}`, data);
+
+return interaction.update({
+embeds: [embed],
+components: [row]
+});
+});
+
+return;
 }
 
 }
