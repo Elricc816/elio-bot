@@ -105,7 +105,7 @@ module.exports = {
         }
 
         // ==========================================
-        // 4. SUBCOMMANDS: ENABLE & MANAGE (Combined)
+        // 4. SUBCOMMANDS: ENABLE & MANAGE
         // ==========================================
         if (sub === "enable" || sub === "manage") {
             const enabled = await db.get(`antinuke_${message.guild.id}`);
@@ -130,13 +130,11 @@ module.exports = {
                 });
             }
 
-            // Cleanly scope local state per execution context
             const currentFilters = (await db.get(`antinuke_filters_${message.guild.id}`)) || {
                 ban: true, kick: true, botadd: true, channeldelete: true,
                 roledelete: true, guildupdate: true, webhook: true, mention: true
             };
 
-            // Dynamic view string generator
             const getDisplayDescription = (f) => 
                 `Configure your server protection before enabling Antinuke.\n\n` +
                 `${f.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban\n` +
@@ -175,7 +173,6 @@ module.exports = {
             const rows = [new ActionRowBuilder().addComponents(menu), buttons];
             const panel = await message.reply({ embeds: [embed], components: rows });
 
-            // Unified processing collector (handles dropdown and buttons natively)
             const collector = panel.createMessageComponentCollector({ time: 300000 });
 
             collector.on("collect", async interaction => {
@@ -186,7 +183,6 @@ module.exports = {
                     });
                 }
 
-                // Handling Select Menu Interactions
                 if (interaction.isStringSelectMenu()) {
                     const value = interaction.values[0];
                     currentFilters[value] = !currentFilters[value];
@@ -195,9 +191,8 @@ module.exports = {
                     return await interaction.update({ embeds: [embed], components: rows });
                 }
 
-                // Handling Button Interactions
                 if (interaction.isButton()) {
-                    collector.stop(); // Gracefully disconnect collector structure
+                    collector.stop();
 
                     if (interaction.customId === "cancel") {
                         return interaction.update({
@@ -226,18 +221,99 @@ module.exports = {
         }
 
         // ==========================================
-        // 5. SUBCOMMAND: DISABLE
+        // 5. SUBCOMMAND: DISABLE (With interactive confirmation)
         // ==========================================
         if (sub === "disable") {
-            await db.delete(`antinuke_${message.guild.id}`);
-            await db.delete(`antinuke_filters_${message.guild.id}`);
+            const enabled = await db.get(`antinuke_${message.guild.id}`);
 
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor("#FF7F7F")
-                        .setDescription("<:shield:1514699900225323108> Antinuke systems have been **disabled** for this server.")
-                ]
+            // Pre-check: If it's already disabled
+            if (!enabled) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#FF7F7F")
+                            .setDescription("<a:spider_cross:1514728338701287640> Antinuke system is already **disabled** for this server.")
+                    ]
+                });
+            }
+
+            // Confirmation Prompt View
+            const confirmEmbed = new EmbedBuilder()
+                .setColor("#FFCC66")
+                .setDescription(
+                    `<:WarningIcon:1514708751385497721> Are you sure you want to **DISABLE Antinuke** in this server?\n\n` +
+                    `<:arrow:1514699753462566953> This will turn off antinuke for this server.`
+                );
+
+            const confirmRow = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId("disable_yes")
+                    .setLabel("Yes")
+                    .setEmoji("1514714209085292564") // <a:Animated_Tick:1514714209085292564>
+                    .setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+                    .setCustomId("disable_no")
+                    .setLabel("No")
+                    .setEmoji("1514728338701287640") // <a:spider_cross:1514728338701287640>
+                    .setStyle(ButtonStyle.Danger)
+            );
+
+            const panel = await message.reply({
+                embeds: [confirmEmbed],
+                components: [confirmRow]
+            });
+
+            const collector = panel.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 60000 // 1 minute window to confirm
+            });
+
+            collector.on("collect", async interaction => {
+                if (interaction.user.id !== message.author.id) {
+                    return interaction.reply({
+                        embeds: [new EmbedBuilder().setColor("#FF7F7F").setDescription("<a:spider_cross:1514728338701287640> This menu isn't yours.")],
+                        ephemeral: true
+                    });
+                }
+
+                collector.stop();
+
+                if (interaction.customId === "disable_yes") {
+                    // Wipe protection statuses from database cleanly
+                    await db.delete(`antinuke_${message.guild.id}`);
+                    await db.delete(`antinuke_filters_${message.guild.id}`);
+
+                    return interaction.update({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setColor("#FF7F7F")
+                                .setTitle("<:shield:1514699900225323108> Antinuke Disabled")
+                                .setDescription("<a:spider_cross:1514728338701287640> Antinuke has been **disabled**.")
+                        ],
+                        components: []
+                    });
+                }
+
+                if (interaction.customId === "disable_no") {
+                    return interaction.update({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setColor("#57F287")
+                                .setDescription("<a:Animated_Tick:1514714209085292564> Action aborted. Antinuke protection remains active.")
+                        ],
+                        components: []
+                    });
+                }
+            });
+
+            // Fallback handler if user leaves it running and ignores buttons
+            collector.on("end", async (collected, reason) => {
+                if (reason === "time") {
+                    await panel.edit({
+                        embeds: [new EmbedBuilder().setColor("#D3D3D3").setDescription("<a:spider_cross:1514728338701287640> Disable confirmation timed out.")],
+                        components: []
+                    }).catch(() => {});
+                }
             });
         }
     }
