@@ -291,7 +291,11 @@ buttonCollector.on("collect", async interaction => {
 
 if (interaction.user.id !== message.author.id) {
 return interaction.reply({
-content: "This menu isn't yours.",
+embeds: [
+new EmbedBuilder()
+.setColor("#FF7F7F")
+.setDescription("<a:spider_cross:1514728338701287640> This menu isn't yours.")
+],
 ephemeral: true
 });
 }
@@ -339,8 +343,9 @@ return;
 // =========================
 if (sub === "disable") {
 
-await db.set(`antinuke_${message.guild.id}`, false);
-
+await db.delete(`antinuke_${message.guild.id}`);
+await db.delete(`antinuke_filters_${message.guild.id}`);
+  
 return message.reply({
 embeds: [
 new EmbedBuilder()
