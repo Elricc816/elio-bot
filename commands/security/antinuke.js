@@ -110,7 +110,7 @@ module.exports = {
         if (sub === "enable" || sub === "manage") {
             const enabled = await db.get(`antinuke_${message.guild.id}`);
 
-            if (sub === "enable" && enabled) {
+            if (sub === "enable" && enabled === true) {
                 return message.reply({
                     embeds: [
                         new EmbedBuilder()
@@ -120,7 +120,7 @@ module.exports = {
                 });
             }
 
-            if (sub === "manage" && !enabled) {
+            if (sub === "manage" && enabled !== true) {
                 return message.reply({
                     embeds: [
                         new EmbedBuilder()
@@ -205,11 +205,16 @@ module.exports = {
                         await db.set(`antinuke_${message.guild.id}`, true);
                         await db.set(`antinuke_filters_${message.guild.id}`, currentFilters);
 
+                        // Dynamic customization mapping for dynamic final views
+                        const finalTitle = sub === "enable" 
+                            ? "<:shield:1514705361935012081> Antinuke System Activated" 
+                            : "<:shield:1514699900225323108> Antinuke Settings Saved";
+
                         return interaction.update({
                             embeds: [
                                 new EmbedBuilder()
                                     .setColor("#57F287")
-                                    .setTitle("<:shield:1514705361935012081> Antinuke System Activated")
+                                    .setTitle(finalTitle)
                                     .setDescription(`<a:Animated_Tick:1514714209085292564> Settings saved successfully.\n\n<:arrow:1514699753462566953> Your server is now fully secured.`)
                             ],
                             components: []
@@ -221,13 +226,12 @@ module.exports = {
         }
 
         // ==========================================
-        // 5. SUBCOMMAND: DISABLE (With interactive confirmation)
+        // 5. SUBCOMMAND: DISABLE
         // ==========================================
         if (sub === "disable") {
             const enabled = await db.get(`antinuke_${message.guild.id}`);
 
-            // Pre-check: If it's already disabled
-            if (!enabled) {
+            if (!enabled || enabled === false) {
                 return message.reply({
                     embeds: [
                         new EmbedBuilder()
@@ -237,7 +241,6 @@ module.exports = {
                 });
             }
 
-            // Confirmation Prompt View
             const confirmEmbed = new EmbedBuilder()
                 .setColor("#FFCC66")
                 .setDescription(
@@ -249,12 +252,12 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId("disable_yes")
                     .setLabel("Yes")
-                    .setEmoji("1514714209085292564") // <a:Animated_Tick:1514714209085292564>
+                    .setEmoji("1514714209085292564")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId("disable_no")
                     .setLabel("No")
-                    .setEmoji("1514728338701287640") // <a:spider_cross:1514728338701287640>
+                    .setEmoji("1514728338701287640")
                     .setStyle(ButtonStyle.Danger)
             );
 
@@ -265,7 +268,7 @@ module.exports = {
 
             const collector = panel.createMessageComponentCollector({
                 componentType: ComponentType.Button,
-                time: 60000 // 1 minute window to confirm
+                time: 60000 
             });
 
             collector.on("collect", async interaction => {
@@ -279,9 +282,11 @@ module.exports = {
                 collector.stop();
 
                 if (interaction.customId === "disable_yes") {
-                    // Wipe protection statuses from database cleanly
-                    await db.delete(`antinuke_${message.guild.id}`);
-                    await db.delete(`antinuke_filters_${message.guild.id}`);
+                    await db.set(`antinuke_${message.guild.id}`, false);
+                    await db.set(`antinuke_filters_${message.guild.id}`, {
+                        ban: false, kick: false, botadd: false, channeldelete: false,
+                        roledelete: false, guildupdate: false, webhook: false, mention: false
+                    });
 
                     return interaction.update({
                         embeds: [
@@ -306,7 +311,6 @@ module.exports = {
                 }
             });
 
-            // Fallback handler if user leaves it running and ignores buttons
             collector.on("end", async (collected, reason) => {
                 if (reason === "time") {
                     await panel.edit({
