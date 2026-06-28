@@ -209,7 +209,7 @@ module.exports = {
                             embeds: [
                                 new EmbedBuilder()
                                     .setColor("#57F287")
-                                    .setTitle("<:shield:1514699900225323108> Antinuke Settings Saved")
+                                    .setTitle(":shield~2: Antinuke Activated ")
                                     .setDescription(`<a:Animated_Tick:1514714209085292564> Settings saved successfully.\n\n<:arrow:1514699753462566953> Your server is now fully secured.`)
                             ],
                             components: []
