@@ -441,8 +441,15 @@ time: 300000
 collector.on("collect", async interaction => {
 
 if (interaction.user.id !== message.author.id)
-return interaction.reply({ content: "This menu isn't yours.", ephemeral: true });
-
+return interaction.reply({
+embeds: [
+new EmbedBuilder()
+.setColor("#FF7F7F")
+.setDescription("<a:spider_cross:1514728338701287640> This menu isn't yours.")
+],
+ephemeral: true
+});
+  
 const value = interaction.values[0];
 filters[value] = !filters[value];
 
