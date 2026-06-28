@@ -1,296 +1,121 @@
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
+const { AuditLogEvent } = require("discord.js");
 
-const {
-EmbedBuilder,
-ActionRowBuilder,
-StringSelectMenuBuilder,
-ButtonBuilder,
-ButtonStyle,
-ComponentType,
-PermissionsBitField
-} = require("discord.js");
+module.exports = (client) => {
 
-const cooldown = new Map();
+    // ==========================================
+    // HELPER: VERIFY IF PROTECTION IS ACTIVE
+    // ==========================================
+    async function shouldAction(guild, filterType, executorId) {
+        // 1. Is global antinuke on?
+        const isEnabled = await db.get(`antinuke_${guild.id}`);
+        if (!isEnabled) return false;
 
-module.exports = {
-name: "antinuke",
+        // 2. Is this specific filter active?
+        const filters = await db.get(`antinuke_filters_${guild.id}`);
+        if (!filters || filters[filterType] !== true) return false;
 
-async execute(message, args) {
+        // 3. Bypass if the executor is the Server Owner or the Bot itself
+        if (executorId === guild.ownerId || executorId === client.user.id) return false;
 
-if (!message.guild) return;
+        // 4. Bypass if the user is custom whitelisted
+        const isWhitelisted = await db.get(`antinuke_whitelist_${guild.id}_${executorId}`);
+        if (isWhitelisted) return false;
 
-const sub = args[0]?.toLowerCase();
+        return true;
+    }
 
-// =========================
-// COOLDOWN
-// =========================
-if (cooldown.has(message.author.id)) {
-const timeLeft = ((cooldown.get(message.author.id) - Date.now()) / 1000).toFixed(1);
+    // ==========================================
+    // HELPER: PUNISH THE ROUGE ADMIN
+    // ==========================================
+    async function punishExecutor(guild, executorId, reason) {
+        const member = await guild.members.fetch(executorId).catch(() => null);
+        if (!member) return;
 
-if (timeLeft > 0) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FF7F7F")
-.setDescription(`<:off:1520340423829098597> Cooldown \`${timeLeft}s\``)
-]
-});
-}
-}
+        // Attempt to ban the nuker. If hierarchy blocks it, strip all their roles instead.
+        await member.ban({ reason: `Antinuke: ${reason}` }).catch(async () => {
+            await member.roles.set([], `Antinuke: Failed to ban, stripped all roles instead.`).catch(() => {});
+        });
+    }
 
-cooldown.set(message.author.id, Date.now() + 3000);
-setTimeout(() => cooldown.delete(message.author.id), 3000);
 
-// =========================
-// PERMISSION CHECK
-// =========================
-if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> You need Administrator permission.")
-]
-});
-}
+    // ==========================================
+    // 1. WATCHING BAN LOGS (guildBanAdd)
+    // ==========================================
+    client.on("guildBanAdd", async (ban) => {
+        const guild = ban.guild;
 
-// =========================
-// ENABLE
-// =========================
-if (sub === "enable") {
+        // Fetch the audit log entry for the ban
+        const fetchedLogs = await guild.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberBanAdd }).catch(() => null);
+        if (!fetchedLogs) return;
+        const logEntry = fetchedLogs.entries.first();
+        if (!logEntry) return;
 
-const enabled = await db.get(`antinuke_${message.guild.id}`);
+        const { executor, target } = logEntry;
 
-if (enabled) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FFCC66")
-.setDescription(`<:off:1520340423829098597> Antinuke is already **ENABLED** in this server.
+        // Check if we should act
+        if (!(await shouldAction(guild, "ban", executor.id))) return;
 
-Use \`,antinuke manage\` to edit settings.`)
-]
-});
-}
+        // REVERSE THE DAMAGE: Unban the victim
+        await guild.members.unban(target.id, "Antinuke: Reversing illegal ban").catch(() => {});
 
-// default settings
-let filters = {
-ban: true,
-kick: true,
-botadd: true,
-channeldelete: true,
-roledelete: true,
-guildupdate: true,
-webhook: true,
-mention: true
-};
+        // PUNISH NUKER
+        await punishExecutor(guild, executor.id, "Rogue Admin Mass Banning");
+    });
 
-await db.set(`antinuke_filters_${message.guild.id}`, filters);
 
-// =========================
-// PREMIUM EMBED UI
-// =========================
-const embed = new EmbedBuilder()
-.setColor("#D3D3D3")
-.setTitle("<:on:1520340385451347968> Antinuke Control Panel")
-.setDescription(
-`Configure your protection system below.
+    // ==========================================
+    // 2. WATCHING CHANNEL DELETIONS (channelDelete)
+    // ==========================================
+    client.on("channelDelete", async (channel) => {
+        const guild = channel.guild;
+        if (!guild) return;
 
-${filters.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban Protection
-${filters.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick Protection
-${filters.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Protection
-${filters.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
-${filters.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
-${filters.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
-${filters.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
-${filters.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam
-`
-)
-.setFooter({ text: `Requested by ${message.author.username}` });
+        const fetchedLogs = await guild.fetchAuditLogs({ limit: 1, type: AuditLogEvent.ChannelDelete }).catch(() => null);
+        if (!fetchedLogs) return;
+        const logEntry = fetchedLogs.entries.first();
+        if (!logEntry) return;
 
-// =========================
-// DROPDOWN MENU
-// =========================
-const menu = new StringSelectMenuBuilder()
-.setCustomId("antinuke_menu")
-.setPlaceholder("Toggle protection system")
-.addOptions([
-{ label: "Ban Protection", value: "ban" },
-{ label: "Kick Protection", value: "kick" },
-{ label: "Bot Protection", value: "botadd" },
-{ label: "Channel Delete", value: "channeldelete" },
-{ label: "Role Delete", value: "roledelete" },
-{ label: "Guild Update", value: "guildupdate" },
-{ label: "Webhook Protection", value: "webhook" },
-{ label: "Mention Spam", value: "mention" }
-]);
+        const { executor } = logEntry;
 
-const row1 = new ActionRowBuilder().addComponents(menu);
+        if (!(await shouldAction(guild, "channeldelete", executor.id))) return;
 
-const row2 = new ActionRowBuilder().addComponents(
-new ButtonBuilder()
-.setCustomId("save")
-.setLabel("Save Settings")
-.setStyle(ButtonStyle.Success),
+        // REVERSE THE DAMAGE: Re-create the deleted channel
+        await channel.clone({ reason: "Antinuke: Restoring deleted channel" }).catch(() => {});
 
-new ButtonBuilder()
-.setCustomId("cancel")
-.setLabel("Cancel")
-.setStyle(ButtonStyle.Danger)
-);
+        // PUNISH NUKER
+        await punishExecutor(guild, executor.id, "Rogue Admin Deleting Channels");
+    });
 
-// send panel
-const msg = await message.reply({
-embeds: [embed],
-components: [row1, row2]
-});
 
-// =========================
-// SELECT MENU COLLECTOR
-// =========================
-const collector = msg.createMessageComponentCollector({
-componentType: ComponentType.StringSelect,
-time: 300000
-});
+    // ==========================================
+    // 3. WATCHING ROLE DELETIONS (roleDelete)
+    // ==========================================
+    client.on("roleDelete", async (role) => {
+        const guild = role.guild;
 
-collector.on("collect", async (interaction) => {
+        const fetchedLogs = await guild.fetchAuditLogs({ limit: 1, type: AuditLogEvent.RoleDelete }).catch(() => null);
+        if (!fetchedLogs) return;
+        const logEntry = fetchedLogs.entries.first();
+        if (!logEntry) return;
 
-if (interaction.user.id !== message.author.id) {
-return interaction.reply({
-content: "<:off:1520340423829098597> This menu isn't yours.",
-ephemeral: true
-});
-}
+        const { executor } = logEntry;
 
-const filtersDB = await db.get(`antinuke_filters_${message.guild.id}`) || filters;
-const value = interaction.values[0];
+        if (!(await shouldAction(guild, "roledelete", executor.id))) return;
 
-filtersDB[value] = !filtersDB[value];
+        // REVERSE THE DAMAGE: Re-create the deleted role
+        await guild.roles.create({
+            name: role.name,
+            color: role.color,
+            hoist: role.hoist,
+            permissions: role.permissions,
+            mentionable: role.mentionable,
+            reason: "Antinuke: Restoring deleted role"
+        }).catch(() => {});
 
-await db.set(`antinuke_filters_${message.guild.id}`, filtersDB);
+        // PUNISH NUKER
+        await punishExecutor(guild, executor.id, "Rogue Admin Deleting Roles");
+    });
 
-// update embed
-embed.setDescription(
-`Configure your protection system below.
-
-${filtersDB.ban ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Ban Protection
-${filtersDB.kick ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Kick Protection
-${filtersDB.botadd ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Bot Protection
-${filtersDB.channeldelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Channel Delete
-${filtersDB.roledelete ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Role Delete
-${filtersDB.guildupdate ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Guild Update
-${filtersDB.webhook ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Webhook
-${filtersDB.mention ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} Mention Spam`
-);
-
-await interaction.update({
-embeds: [embed],
-components: [row1, row2]
-});
-});
-
-// =========================
-// BUTTON COLLECTOR
-// =========================
-const buttonCollector = msg.createMessageComponentCollector({
-componentType: ComponentType.Button,
-time: 300000
-});
-
-buttonCollector.on("collect", async (interaction) => {
-
-if (interaction.user.id !== message.author.id) {
-return interaction.reply({
-content: "<:off:1520340423829098597> This interaction isn't yours.",
-ephemeral: true
-});
-}
-
-if (interaction.customId === "cancel") {
-return msg.delete().catch(() => {});
-}
-
-if (interaction.customId === "save") {
-
-await db.set(`antinuke_${message.guild.id}`, true);
-
-return interaction.update({
-embeds: [
-new EmbedBuilder()
-.setColor("#57F287")
-.setTitle("<:on:1520340385451347968> Antinuke Enabled")
-.setDescription("Settings saved successfully.\nYour server is now protected.")
-],
-components: []
-});
-}
-});
-}
-
-// =========================
-// DISABLE
-// =========================
-if (sub === "disable") {
-
-const enabled = await db.get(`antinuke_${message.guild.id}`);
-
-if (!enabled) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FFCC66")
-.setDescription("<:off:1520340423829098597> Antinuke is already disabled.")
-]
-});
-}
-
-await db.delete(`antinuke_${message.guild.id}`);
-await db.delete(`antinuke_filters_${message.guild.id}`);
-
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> Antinuke has been disabled.")
-]
-});
-}
-
-// =========================
-// MANAGE
-// =========================
-if (sub === "manage") {
-
-const enabled = await db.get(`antinuke_${message.guild.id}`);
-
-if (!enabled) {
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#FF7F7F")
-.setDescription("<:off:1520340423829098597> Antinuke is not enabled in this server.")
-]
-});
-}
-
-const filters = await db.get(`antinuke_filters_${message.guild.id}`) || {};
-
-return message.reply({
-embeds: [
-new EmbedBuilder()
-.setColor("#D3D3D3")
-.setTitle("<:on:1520340385451347968> Antinuke Settings")
-.setDescription(
-Object.entries(filters)
-.map(([k,v]) =>
-`${v ? "<:on:1520340385451347968>" : "<:off:1520340423829098597>"} ${k}`
-)
-.join("\n")
-)
-]
-});
-}
-
-}
 };
