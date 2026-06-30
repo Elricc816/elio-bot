@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
@@ -7,43 +7,120 @@ module.exports = {
 
     async execute(message, args) {
 
-        const reason = args.length ? args.join(" ") : "No reason provided.";
+        const reason = args.length ? args.join(" ") : "~ Busy </>";
 
-        const alreadyAfk = await db.get(`afk_${message.author.id}`);
-
-        if (alreadyAfk) {
+        const already = await db.get(`afk_${message.author.id}`);
+        if (already) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor("#FFCC66")
-                        .setDescription(
-                            `<:WarningIcon:1514708751385497721> You are already AFK.\n\n<:arrow:1514699753462566953> Reason • \`${alreadyAfk.reason}\``
-                        )
+                        .setDescription(`<:WarningIcon:1514708751385497721> You are already AFK`)
                 ]
             });
         }
 
-        await db.set(`afk_${message.author.id}`, {
-            reason,
-            since: Date.now()
+        // =========================
+        // BUTTON PANEL
+        // =========================
+        const embed = new EmbedBuilder()
+            .setColor("#D3D3D3")
+            .setTitle("<:timerr:1514699712681218094> AFK Panel")
+            .setDescription("Choose AFK mode below");
+
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId("afk_global")
+                .setLabel("Global AFK")
+                .setStyle(ButtonStyle.Primary),
+
+            new ButtonBuilder()
+                .setCustomId("afk_server")
+                .setLabel("Server AFK")
+                .setStyle(ButtonStyle.Secondary),
+
+            new ButtonBuilder()
+                .setCustomId("afk_close")
+                .setLabel("Close")
+                .setStyle(ButtonStyle.Danger)
+        );
+
+        const msg = await message.reply({
+            embeds: [embed],
+            components: [row]
         });
 
-        return message.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setColor("#57F287")
-                    .setTitle("<:timerr:1514699712681218094> AFK Enabled")
-                    .setDescription(
-                        `<:Tick:1514714190500335677> Your AFK has been enabled.\n\n` +
-                        `<:arrow:1514699753462566953> **Reason**\n> ${reason}\n\n` +
-                        `<:arrow:1514699753462566953> I'll remove your AFK automatically when you send a message.`
-                    )
-                    .setFooter({
-                        text: `Requested by ${message.author.username}`
-                    })
-                    .setTimestamp()
-            ]
+        const collector = msg.createMessageComponentCollector({ time: 10000 });
+
+        collector.on("collect", async (interaction) => {
+
+            if (interaction.user.id !== message.author.id) return;
+
+            if (interaction.customId === "afk_close") {
+                return interaction.update({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#FF7F7F")
+                            .setDescription("<:Tick:1514714190500335677> AFK panel closed")
+                    ],
+                    components: []
+                });
+            }
+
+            // =========================
+            // GLOBAL AFK
+            // =========================
+            if (interaction.customId === "afk_global") {
+
+                await db.set(`afk_${message.author.id}`, {
+                    reason,
+                    since: Date.now(),
+                    type: "global"
+                });
+
+                return interaction.update({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#57F287")
+                            .setDescription(
+                                `<:Tick:1514714190500335677> Global AFK set\n\n` +
+                                `<:arrow:1514699753462566953> Reason • ${reason}`
+                            )
+                    ],
+                    components: []
+                });
+            }
+
+            // =========================
+            // SERVER AFK
+            // =========================
+            if (interaction.customId === "afk_server") {
+
+                await db.set(`afk_${message.guild.id}_${message.author.id}`, {
+                    reason,
+                    since: Date.now(),
+                    type: "server"
+                });
+
+                return interaction.update({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#A9C7FF")
+                            .setDescription(
+                                `<:Tick:1514714190500335677> Server AFK set\n\n` +
+                                `<:arrow:1514699753462566953> Reason • ${reason}`
+                            )
+                    ],
+                    components: []
+                });
+            }
         });
 
+        // =========================
+        // AUTO DELETE PANEL AFTER 10s
+        // =========================
+        setTimeout(() => {
+            msg.edit({ components: [] }).catch(() => {});
+        }, 10000);
     }
 };
