@@ -130,6 +130,7 @@ if (globalAfk) {
                     `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
                     `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
                     `<:info:1514699288674828310> Reason • ${globalAfk.reason}`
+                    `<:dot:1514706694079254730> Mentions • **${globalAfk.mentions || 0}**`
                 )
         ]
     });
@@ -151,6 +152,7 @@ if (serverAfk) {
                     `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
                     `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
                     `<:info:1514699288674828310> Reason • ${serverAfk.reason}`
+                    `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
                 )
         ]
     });
