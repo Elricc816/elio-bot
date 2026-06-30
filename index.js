@@ -122,14 +122,15 @@ const globalAfk = await db.get(`afk_${message.author.id}`);
 if (globalAfk) {
     await db.delete(`afk_${message.author.id}`);
 
-    return message.reply({
+    message.reply({
         embeds: [
             new EmbedBuilder()
                 .setColor("#57F287")
+                .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                 .setDescription(
                     `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
-                    `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
-                    `<:info:1514699288674828310> Reason • ${globalAfk.reason}`
+                    `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
+                    `<:info:1514699288674828310> Reason • ${globalAfk.reason}\n` +
                     `<:dot:1514706694079254730> Mentions • **${globalAfk.mentions || 0}**`
                 )
         ]
@@ -144,14 +145,15 @@ const serverAfk = await db.get(`afk_${message.guild.id}_${message.author.id}`);
 if (serverAfk) {
     await db.delete(`afk_${message.guild.id}_${message.author.id}`);
 
-    return message.reply({
+    message.reply({
         embeds: [
             new EmbedBuilder()
                 .setColor("#A9C7FF")
+                .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                 .setDescription(
                     `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
-                    `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
-                    `<:info:1514699288674828310> Reason • ${serverAfk.reason}`
+                    `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
+                    `<:info:1514699288674828310> Reason • ${serverAfk.reason}\n` +
                     `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
                 )
         ]
@@ -161,26 +163,38 @@ if (serverAfk) {
 // =========================
 // AFK MENTION SYSTEM
 // =========================
-message.mentions.users.forEach(async (user) => {
+for (const user of message.mentions.users.values()) {
 
-    const g = await db.get(`afk_${user.id}`);
-    const s = await db.get(`afk_${message.guild.id}_${user.id}`);
+    const globalKey = `afk_${user.id}`;
+    const serverKey = `afk_${message.guild.id}_${user.id}`;
 
-    const data = g || s;
-    if (!data) return;
+    let data = await db.get(globalKey);
+    let key = globalKey;
+
+    if (!data) {
+        data = await db.get(serverKey);
+        key = serverKey;
+    }
+
+    if (!data) continue;
+
+    // Increase mention count
+    data.mentions = (data.mentions || 0) + 1;
+    await db.set(key, data);
 
     message.reply({
         embeds: [
             new EmbedBuilder()
                 .setColor("#FFCC66")
+                .setThumbnail(user.displayAvatarURL({ dynamic: true }))
                 .setDescription(
-                    `<:WarningIcon:1514708751385497721> ${user.username} is AFK\n\n` +
+                    `<:WarningIcon:1514708751385497721> **${user.username} is currently AFK**\n\n` +
                     `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
-                    `<:timerr:1514699712681218094> Time • <t:${Math.floor(data.since / 1000)}:R>`
+                    `<:timerr:1514699712681218094> Since • <t:${Math.floor(data.since / 1000)}:R>`
                 )
         ]
     });
-});
+                     }
   
   if (message.author.bot) return;
 
