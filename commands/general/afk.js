@@ -9,13 +9,16 @@ module.exports = {
 
         const reason = args.length ? args.join(" ") : "~ Busy </>";
 
-        const already = await db.get(`afk_${message.author.id}`);
+        const already =
+            await db.get(`afk_${message.author.id}`) ||
+            await db.get(`afk_${message.guild.id}_${message.author.id}`);
+
         if (already) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor("#FFCC66")
-                        .setDescription(`<:WarningIcon:1514708751385497721> You are already AFK`)
+                        .setDescription("<:WarningIcon:1514708751385497721> You are already AFK")
                 ]
             });
         }
@@ -23,11 +26,12 @@ module.exports = {
         // =========================
         // BUTTON PANEL
         // =========================
+
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setTitle("<:timerr:1514699712681218094> AFK Panel")
-            .setDescription("Choose AFK mode below")
-            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }));
+            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+            .setDescription("Choose AFK mode below");
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -51,11 +55,22 @@ module.exports = {
             components: [row]
         });
 
-        const collector = msg.createMessageComponentCollector({ time: 10000 });
+        const collector = msg.createMessageComponentCollector({
+            time: 10000
+        });
 
-        collector.on("collect", async (interaction) => {
+        collector.on("collect", async interaction => {
 
-            if (interaction.user.id !== message.author.id) return;
+            if (interaction.user.id !== message.author.id) {
+                return interaction.reply({
+                    ephemeral: true,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#FF7F7F")
+                            .setDescription("<:WarningIcon:1514708751385497721> This panel isn't yours.")
+                    ]
+                });
+            }
 
             if (interaction.customId === "afk_close") {
                 return interaction.update({
@@ -71,6 +86,7 @@ module.exports = {
             // =========================
             // GLOBAL AFK
             // =========================
+
             if (interaction.customId === "afk_global") {
 
                 await db.set(`afk_${message.author.id}`, {
@@ -84,6 +100,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setColor("#57F287")
+                            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                             .setDescription(
                                 `<:Tick:1514714190500335677> Global AFK set\n\n` +
                                 `<:arrow:1514699753462566953> Reason • ${reason}`
@@ -96,6 +113,7 @@ module.exports = {
             // =========================
             // SERVER AFK
             // =========================
+
             if (interaction.customId === "afk_server") {
 
                 await db.set(`afk_${message.guild.id}_${message.author.id}`, {
@@ -109,6 +127,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setColor("#A9C7FF")
+                            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                             .setDescription(
                                 `<:Tick:1514714190500335677> Server AFK set\n\n` +
                                 `<:arrow:1514699753462566953> Reason • ${reason}`
@@ -119,11 +138,8 @@ module.exports = {
             }
         });
 
-        // =========================
-        // AUTO DELETE PANEL AFTER 10s
-        // =========================
-        setTimeout(() => {
+        collector.on("end", () => {
             msg.edit({ components: [] }).catch(() => {});
-        }, 10000);
+        });
     }
 };
