@@ -138,6 +138,38 @@ if (message.reference) {
   if (message.author.bot) return;
   db.push(`chat_${message.author.id}`, message.content);
 
+  const afkData = await db.get(`afk_${message.author.id}`);
+
+if (afkData) {
+    await db.delete(`afk_${message.author.id}`);
+
+    message.reply({
+        embeds: [
+            new EmbedBuilder()
+                .setColor("#D3D3D3")
+                .setDescription(`<:Tick:1514714190500335677> Welcome back ${message.author}`)
+        ]
+    }).then(m => {
+        setTimeout(() => m.delete().catch(() => {}), 5000);
+    });
+}
+
+message.mentions.users.forEach(async (user) => {
+    const data = await db.get(`afk_${user.id}`);
+    if (!data) return;
+
+    message.reply({
+        embeds: [
+            new EmbedBuilder()
+                .setColor("#FFCC66")
+                .setDescription(
+                    `<:WarningIcon:1514708751385497721> ${user.username} is AFK\nReason: ${data.reason}`
+                )
+        ]
+    });
+});
+  
+
   if (
     message.content === `<@${client.user.id}>` ||
     message.content === `<@!${client.user.id}>`
