@@ -109,6 +109,77 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async message => {
+
+  const { EmbedBuilder } = require("discord.js");
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
+// =========================
+// REMOVE GLOBAL AFK
+// =========================
+const globalAfk = await db.get(`afk_${message.author.id}`);
+
+if (globalAfk) {
+    await db.delete(`afk_${message.author.id}`);
+
+    return message.reply({
+        embeds: [
+            new EmbedBuilder()
+                .setColor("#57F287")
+                .setDescription(
+                    `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
+                    `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
+                    `<:info:1514699288674828310> Reason • ${globalAfk.reason}`
+                )
+        ]
+    });
+}
+
+// =========================
+// REMOVE SERVER AFK
+// =========================
+const serverAfk = await db.get(`afk_${message.guild.id}_${message.author.id}`);
+
+if (serverAfk) {
+    await db.delete(`afk_${message.guild.id}_${message.author.id}`);
+
+    return message.reply({
+        embeds: [
+            new EmbedBuilder()
+                .setColor("#A9C7FF")
+                .setDescription(
+                    `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
+                    `<:arrow:1514699753462566953> You were AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
+                    `<:info:1514699288674828310> Reason • ${serverAfk.reason}`
+                )
+        ]
+    });
+}
+
+// =========================
+// AFK MENTION SYSTEM
+// =========================
+message.mentions.users.forEach(async (user) => {
+
+    const g = await db.get(`afk_${user.id}`);
+    const s = await db.get(`afk_${message.guild.id}_${user.id}`);
+
+    const data = g || s;
+    if (!data) return;
+
+    message.reply({
+        embeds: [
+            new EmbedBuilder()
+                .setColor("#FFCC66")
+                .setDescription(
+                    `<:WarningIcon:1514708751385497721> ${user.username} is AFK\n\n` +
+                    `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
+                    `<:timerr:1514699712681218094> Time • <t:${Math.floor(data.since / 1000)}:R>`
+                )
+        ]
+    });
+});
+  
   if (message.author.bot) return;
 
 if (message.reference) {
