@@ -26,7 +26,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setTitle("<:timerr:1514699712681218094> AFK Panel")
-            .setDescription("Choose AFK mode below");
+            .setDescription("Choose AFK mode below")
+            .setThumbnail(message.author.displayAvatarURL({ dynamic: true }));
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -75,7 +76,8 @@ module.exports = {
                 await db.set(`afk_${message.author.id}`, {
                     reason,
                     since: Date.now(),
-                    type: "global"
+                    type: "global",
+                    mentions: 0
                 });
 
                 return interaction.update({
@@ -99,7 +101,8 @@ module.exports = {
                 await db.set(`afk_${message.guild.id}_${message.author.id}`, {
                     reason,
                     since: Date.now(),
-                    type: "server"
+                    type: "server",
+                    mentions: 0
                 });
 
                 return interaction.update({
