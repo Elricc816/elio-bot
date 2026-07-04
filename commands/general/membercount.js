@@ -26,6 +26,7 @@ module.exports = {
 > **__Total__ :** \`${members.size}\`
 <:dot:1514706694079254730> **Online :** \`${online}\`
 <:dot:1514706694079254730> **Offline :** \`${offline}\``
+                .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
             );
 
         return message.reply({ embeds: [embed] });
