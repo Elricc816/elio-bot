@@ -327,20 +327,20 @@ if (message.content.startsWith(prefix)) {
 
 const command = client.commands.get(commandName);
 
-  if (!command) {
+  if (message.content.startsWith(prefix)) {
+    args = message.content.slice(prefix.length).trim().split(/ +/);
+    commandName = args.shift().toLowerCase();
+} else if (isNoPrefix) {
+    args = message.content.trim().split(/ +/);
+    commandName = args.shift().toLowerCase();
+} else {
+    return; // 👈 IMPORTANT (ignore normal messages)
+}
 
-    const { EmbedBuilder } = require('discord.js');
+const command = client.commands.get(commandName);
 
-    const embed = new EmbedBuilder()
-        .setTitle('Unknown Command')
-        .setDescription(
-            "<:WarningIcon:1514708751385497721> Didn't recognize that command.\n\nUse `,help` for a list of commands."
-        )
-        .setColor('#FF5C5C')
-        .setFooter({ text: 'Elio • Created by Elric' });
-
-    return message.reply({ embeds: [embed] });
-  }
+if (!command) return; // 👈 no error message anymore
+  
   try {
   await command.execute(message, args, client);
 } catch (err) {
