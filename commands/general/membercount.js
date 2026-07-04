@@ -19,13 +19,13 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("<:members:1459287850901180614> Member Count")
+            .setTitle("<:member1:1514699741282304061> Member Count")
             .setDescription(
 `> **__Humans__ :** \`${humans}\`
 > **__Bots__ :** \`${bots}\`
 > **__Total__ :** \`${total}\`
-<:online:1459286574201311364> **Online :** \`${online}\`
-<:invisible:1459286543146680430> **Offline :** \`${offline}\``
+<:dot:1514706694079254730> **Online :** \`${online}\`
+<:dot:1514706694079254730> **Offline :** \`${offline}\``
             );
 
         return message.reply({ embeds: [embed] });
