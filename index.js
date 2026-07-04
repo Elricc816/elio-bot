@@ -290,12 +290,24 @@ setTimeout(() => {
 return;
   }
 
-  if (!message.content.startsWith(prefix)) return;
+ const isNoPrefix =
+    message.author.id === "1306606920836055043" ||
+    await db.get(`noprefix_${message.author.id}`);
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
+let args;
+let commandName;
 
-  const command = client.commands.get(commandName);
+if (message.content.startsWith(prefix)) {
+    args = message.content.slice(prefix.length).trim().split(/ +/);
+    commandName = args.shift().toLowerCase();
+} else if (isNoPrefix) {
+    args = message.content.trim().split(/ +/);
+    commandName = args.shift().toLowerCase();
+} else {
+    return;
+}
+
+const command = client.commands.get(commandName);
 
   if (!command) {
 
