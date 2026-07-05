@@ -327,19 +327,7 @@ if (message.content.startsWith(prefix)) {
 
 const command = client.commands.get(commandName);
 
-  if (message.content.startsWith(prefix)) {
-    args = message.content.slice(prefix.length).trim().split(/ +/);
-    commandName = args.shift().toLowerCase();
-} else if (isNoPrefix) {
-    args = message.content.trim().split(/ +/);
-    commandName = args.shift().toLowerCase();
-} else {
-    return; // 👈 IMPORTANT (ignore normal messages)
-}
-
-const command = client.commands.get(commandName);
-
-if (!command) return; // 👈 no error message anymore
+  if (!command) return;
   
   try {
   await command.execute(message, args, client);
