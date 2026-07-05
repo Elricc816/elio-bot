@@ -36,7 +36,7 @@ module.exports = {
             .setAuthor({ name: `${user.username}'s info` })
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .setDescription(
-`<:search:1387986025812332564> __General__
+`<:search:1523258723974381580> __**General**__
 
 > **Name :** ${user.username}
 > **ID :** ${user.id}
@@ -45,21 +45,21 @@ module.exports = {
 > **Account Created :** <t:${created}:R>
 > **Server Joined :** <t:${joined}:R>
 
-<:mod:1387986036423917569> __Roles__
+<:mod1:1514699913919991839> __**Roles**__
 
 > **Top Role :** ${topRole}
 > **Total Roles :** ${roles.length}
 
-<:greet:1387986100265680976> __Extras__
+<:general:1514699942181081261> __**Extras**__
 
 > **Boosting :** ${boosting}
 > **Voice :** ${voice}
 
-<:staff:1387986116392779807> __Key Perms__
+ <:admin:1514699907103985664>__**Key Perms**__
 
 > ${perms.length ? perms : "None"}
 
-<:906932013951500358:1391489472109219860> __Acknowledgement__
+<:crown:1514699539657920592> __**Acknowledgement**__
 
 > ${message.guild.ownerId === user.id ? "Server Owner" : "Member"}
 
