@@ -12,21 +12,58 @@ module.exports = {
 
         const user = member.user;
 
+        const created = Math.floor(user.createdTimestamp / 1000);
+        const joined = Math.floor(member.joinedTimestamp / 1000);
+
+        const roles = member.roles.cache
+            .filter(r => r.id !== message.guild.id)
+            .map(r => r.toString());
+
+        const topRole = member.roles.highest;
+
+        const perms = member.permissions.toArray().slice(0, 6).join(", ");
+
+        const voice = member.voice.channel
+            ? member.voice.channel.toString()
+            : "Not in a voice channel";
+
+        const boosting = member.premiumSince
+            ? "Boosting"
+            : "Not boosting";
+
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("<:member1:1514699741282304061> User Information")
+            .setAuthor({ name: `${user.username}'s info` })
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .setDescription(
-`> **__Username__ :** ${user.username}
-> **__Display Name__ :** ${member.displayName}
-> **__User ID__ :** \`${user.id}\`
-> **__Bot__ :** \`${user.bot ? "Yes" : "No"}\`
+`<:search:1387986025812332564> __General__
 
-<:dot:1514706694079254730> **Created :** <t:${Math.floor(user.createdTimestamp / 1000)}:F>
-<:dot:1514706694079254730> **Created :** <t:${Math.floor(user.createdTimestamp / 1000)}:R>
+> **Name :** ${user.username}
+> **ID :** ${user.id}
+> **Nickname :** ${member.nickname || "None"}
+> **Is Bot :** ${user.bot ? "Yes" : "No"}
+> **Account Created :** <t:${created}:R>
+> **Server Joined :** <t:${joined}:R>
 
-<:dot:1514706694079254730> **Joined Server :** <t:${Math.floor(member.joinedTimestamp / 1000)}:F>
-<:dot:1514706694079254730> **Joined :** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>`
+<:mod:1387986036423917569> __Roles__
+
+> **Top Role :** ${topRole}
+> **Total Roles :** ${roles.length}
+
+<:greet:1387986100265680976> __Extras__
+
+> **Boosting :** ${boosting}
+> **Voice :** ${voice}
+
+<:staff:1387986116392779807> __Key Perms__
+
+> ${perms.length ? perms : "None"}
+
+<:906932013951500358:1391489472109219860> __Acknowledgement__
+
+> ${message.guild.ownerId === user.id ? "Server Owner" : "Member"}
+
+Requested by ${message.author.username} !! | <t:${Math.floor(Date.now()/1000)}:R>`
             );
 
         return message.reply({
