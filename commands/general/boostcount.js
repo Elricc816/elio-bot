@@ -13,7 +13,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("<:boosts:1523253933030772818> Boost Count")
+            .setTitle("<:boosts:1523254638571294790> Boost Count")
             .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
             .setDescription(
 `> **__Boosts__ :** \`${boosts}\`
