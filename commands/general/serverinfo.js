@@ -14,7 +14,7 @@ module.exports = {
 
         await guild.members.fetch();
 
-        const owner = await guild.fetchOwner();
+        const owner = `<@${guild.ownerId}>`;
 
         const created = Math.floor(guild.createdTimestamp / 1000);
 
@@ -53,6 +53,7 @@ module.exports = {
             .filter(r => r.id !== guild.id)
             .sort((a, b) => b.position - a.position)
             .map(r => `<@&${r.id}>`)
+            .slice(0, 15)
             .join(", ");
 
         const embed = new EmbedBuilder()
@@ -99,17 +100,21 @@ module.exports = {
 > **Boost Level :** ${guild.premiumTier} Level
 > **Boost Count :** ${guild.premiumSubscriptionCount || 0}
 > **Boosters :** ${boosters}
-> **Booster Role :** ${guild.premiumSubscriberRole ? guild.premiumSubscriberRole : "`None`"}
+> **Booster Role :** ${guild.roles.premiumSubscriberRole ? guild.roles.premiumSubscriberRole : "`None`"}
 
 <:admin:1514699907103985664> __**Roles**__
 > ${roles || "`None`"}`
             );
-        embed.setFooter({
-            text: `Requested by ${message.author.username} • ${new Date().toLocaleString()}`,
-            iconURL: message.author.displayAvatarURL({ dynamic: true })
-        });
 
-        embed.setTimestamp();
+        embed.setFooter({
+            text: `Requested by ${message.author.username} • Today at ${new Date().toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit"
+            })}`,
+            iconURL: message.author.displayAvatarURL({
+                dynamic: true
+            })
+        });
 
         if (guild.bannerURL()) {
             embed.setImage(
