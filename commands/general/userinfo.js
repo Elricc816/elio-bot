@@ -37,7 +37,6 @@ module.exports = {
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .setDescription(
 `<:search:1523258723974381580> __**General**__
-
 > **Name :** ${user.username}
 > **ID :** ${user.id}
 > **Nickname :** ${member.nickname || "None"}
@@ -46,24 +45,18 @@ module.exports = {
 > **Server Joined :** <t:${joined}:R>
 
 <:mod1:1514699913919991839> __**Roles**__
-
 > **Top Role :** ${topRole}
 > **Total Roles :** ${roles.length}
 
 <:general:1514699942181081261> __**Extras**__
-
 > **Boosting :** ${boosting}
 > **Voice :** ${voice}
 
  <:admin:1514699907103985664>__**Key Perms**__
-
 > ${perms.length ? perms : "None"}
 
 <:crown:1514699539657920592> __**Acknowledgement**__
-
-> ${message.guild.ownerId === user.id ? "Server Owner" : "Member"}
-
-Requested by ${message.author.username} !! | <t:${Math.floor(Date.now()/1000)}:R>`
+> ${message.guild.ownerId === user.id ? "Server Owner" : "Member"}`
             );
 
         return message.reply({
