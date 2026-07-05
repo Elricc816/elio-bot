@@ -100,8 +100,7 @@ module.exports = {
 > **Boost Level :** ${guild.premiumTier} Level
 > **Boost Count :** ${guild.premiumSubscriptionCount || 0}
 > **Boosters :** ${boosters}
-> **Booster Role :** ${guild.roles.premiumSubscriberRole ? guild.roles.premiumSubscriberRole : "`None`"}
-
+> **Booster Role :** ${guild.roles.cache.find(r => r.tags?.premiumSubscriberRole) || "`None`"}
 <:admin:1514699907103985664> __**Roles**__
 > ${roles || "`None`"}`
             );
