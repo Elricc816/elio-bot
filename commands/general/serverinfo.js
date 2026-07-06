@@ -99,8 +99,9 @@ ${features}
 > **Boost Count :** ${guild.premiumSubscriptionCount || 0}
 > **Boosters :** ${boosters}
 > **Booster Role :** ${boosterRole ? boosterRole.toString() : "`None`"}
+
 <:admin:1514699907103985664> __**Roles**__
-> ${roles || "`None`"}`
+> ${roles || "`None`"}
             );
 
         embed.setFooter({
