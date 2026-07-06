@@ -36,9 +36,9 @@ module.exports = {
         const verification = guild.verificationLevel ?? "None";
 const contentFilter = guild.explicitContentFilter ?? "Disabled";
 
-        const features = guild.features.length
-            ? guild.features.map(f => f.replace(/_/g, " ").toLowerCase()).join(", ")
-            : "No special features.";
+        const features = guild.features?.length
+    ? guild.features.map(f => f.replace(/_/g, " ").toLowerCase()).join(", ")
+    : "No special features.";
 
         const roles = guild.roles.cache
             .filter(r => r.id !== guild.id)
