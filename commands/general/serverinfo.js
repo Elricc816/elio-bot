@@ -10,14 +10,12 @@ module.exports = {
 
         const guild = message.guild;
 
-        await guild.members.fetch();
-
         const owner = `<@${guild.ownerId}>`;
 
         const created = Math.floor(guild.createdTimestamp / 1000);
 
-        const humans = guild.members.cache.filter(m => !m.user.bot).size;
         const bots = guild.members.cache.filter(m => m.user.bot).size;
+        const humans = guild.memberCount - bots;
 
         const textChannels = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).size;
         const voiceChannels = guild.channels.cache.filter(c => c.type === ChannelType.GuildVoice).size;
@@ -27,8 +25,8 @@ module.exports = {
         const regularEmojis = guild.emojis.cache.filter(e => !e.animated).size;
         const animatedEmojis = guild.emojis.cache.filter(e => e.animated).size;
 
-        const boosters = guild.members.cache.filter(m => m.premiumSince).size;
-
+        const boosters = guild.premiumSubscriptionCount || 0;
+        
         const boosterRole = guild.roles.cache.find(
     role => role.tags?.premiumSubscriberRole
 );
