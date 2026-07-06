@@ -65,7 +65,7 @@ const contentFilter = guild.explicitContentFilter ?? "Disabled";
 `<:search:1523258723974381580> __**About Server**__
 > **Name :** ${guild.name}
 > **Server ID :** ${guild.id}
-> **Owner [<:bluetick:1523423666585604106>] :** ${owner}
+> **Owner [<:crown:1514699539657920592>] :** ${owner}
 > **Created At :** <t:${created}:R>
 > **Total Members :** ${guild.memberCount}
 
@@ -82,7 +82,7 @@ ${features}
 > **Humans :** ${humans}
 > **Bots :** ${bots}
 
-<:Logs:1375628818286641245> __**Channels**__
+<:CodeXFolder:1514708745756872845> __**Channels**__
 > **Categories :** ${categories}
 > **Text Channels :** ${textChannels}
 > **Voice Channels :** ${voiceChannels}
