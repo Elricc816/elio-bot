@@ -101,7 +101,7 @@ ${features}
 > **Booster Role :** ${boosterRole ? boosterRole.toString() : "`None`"}
 
 <:admin:1514699907103985664> __**Roles**__
-> ${roles || "`None`"}
+> ${roles || "`None`"}`
             );
 
         embed.setFooter({
