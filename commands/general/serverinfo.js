@@ -36,9 +36,16 @@ module.exports = {
         const verification = guild.verificationLevel ?? "None";
 const contentFilter = guild.explicitContentFilter ?? "Disabled";
 
-        const features = guild.features?.length
-    ? guild.features.map(f => f.replace(/_/g, " ").toLowerCase()).join(", ")
-    : "No special features.";
+        const features = guild.features.length
+    ? guild.features
+        .map(feature =>
+            `> <a:Animated_Tick:1514714209085292564> : ${feature
+                .replace(/_/g, " ")
+                .toLowerCase()
+                .replace(/\b\w/g, c => c.toUpperCase())}`
+        )
+        .join("\n")
+    : `> <a:spider_cross:1514728338701287640> : No special features.`;
 
         const roles = guild.roles.cache
             .filter(r => r.id !== guild.id)
@@ -68,7 +75,7 @@ const contentFilter = guild.explicitContentFilter ?? "Disabled";
 > **Content Filter :** ${contentFilter}
 
 <a:BlackDot:1514727923175657654> __**Features**__
-> ${features}
+${features}
 
 <:member1:1514699741282304061> __**Members**__
 > **Total Members :** ${guild.memberCount}
