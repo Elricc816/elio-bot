@@ -33,8 +33,8 @@ module.exports = {
     role => role.tags?.premiumSubscriberRole
 );
 
-        const verification = guild.verificationLevel || "None";
-const contentFilter = guild.explicitContentFilter || "Disabled";
+        const verification = guild.verificationLevel ?? "None";
+const contentFilter = guild.explicitContentFilter ?? "Disabled";
 
         const features = guild.features.length
             ? guild.features.map(f => f.replace(/_/g, " ").toLowerCase()).join(", ")
@@ -91,7 +91,7 @@ const contentFilter = guild.explicitContentFilter || "Disabled";
 > **Boost Level :** ${guild.premiumTier} Level
 > **Boost Count :** ${guild.premiumSubscriptionCount || 0}
 > **Boosters :** ${boosters}
-> > **Booster Role :** ${boosterRole || "`None`"}
+> **Booster Role :** ${boosterRole ? boosterRole.toString() : "`None`"}
 <:admin:1514699907103985664> __**Roles**__
 > ${roles || "`None`"}`
             );
