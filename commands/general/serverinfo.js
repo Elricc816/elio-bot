@@ -1,8 +1,6 @@
 const {
     EmbedBuilder,
     ChannelType,
-    VerificationLevel,
-    ExplicitContentFilterLevel
 } = require("discord.js");
 
 module.exports = {
@@ -31,19 +29,12 @@ module.exports = {
 
         const boosters = guild.members.cache.filter(m => m.premiumSince).size;
 
-        const verificationLevels = {
-            [VerificationLevel.None]: "None",
-            [VerificationLevel.Low]: "Low",
-            [VerificationLevel.Medium]: "Medium",
-            [VerificationLevel.High]: "High",
-            [VerificationLevel.VeryHigh]: "Very High"
-        };
+        const boosterRole = guild.roles.cache.find(
+    role => role.tags?.premiumSubscriberRole
+);
 
-        const contentFilters = {
-            [ExplicitContentFilterLevel.Disabled]: "Disabled",
-            [ExplicitContentFilterLevel.MembersWithoutRoles]: "Members Without Roles",
-            [ExplicitContentFilterLevel.AllMembers]: "All Members"
-        };
+        const verification = guild.verificationLevel || "None";
+const contentFilter = guild.explicitContentFilter || "Disabled";
 
         const features = guild.features.length
             ? guild.features.map(f => f.replace(/_/g, " ").toLowerCase()).join(", ")
@@ -72,9 +63,9 @@ module.exports = {
 > **Total Members :** ${guild.memberCount}
 
 <:bluetick:1523423666585604106> __**Extras**__
-> **Verification Level :** ${verificationLevels[guild.verificationLevel]}
+> **Verification Level :** ${verification}
 > **MFA Level :** ${guild.mfaLevel ? "Enabled" : "Disabled"}
-> **Content Filter :** ${contentFilters[guild.explicitContentFilter]}
+> **Content Filter :** ${contentFilter}
 
 <a:BlackDot:1514727923175657654> __**Features**__
 > ${features}
@@ -100,7 +91,7 @@ module.exports = {
 > **Boost Level :** ${guild.premiumTier} Level
 > **Boost Count :** ${guild.premiumSubscriptionCount || 0}
 > **Boosters :** ${boosters}
-> **Booster Role :** ${guild.roles.cache.find(r => r.tags?.premiumSubscriberRole) || "`None`"}
+> > **Booster Role :** ${boosterRole || "`None`"}
 <:admin:1514699907103985664> __**Roles**__
 > ${roles || "`None`"}`
             );
