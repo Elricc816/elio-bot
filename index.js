@@ -74,12 +74,6 @@ for (const folder of commandFolders) {
 client.once('ready', () => {
   console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
-  const statuses = [
-  () => `${client.guilds.cache.size} Servers • ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`
-];
-
-  let i = 0;
-
   const updateStatus = () => {
     const status = `${client.guilds.cache.size} Servers • ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`;
 
@@ -89,7 +83,7 @@ client.once('ready', () => {
 };
 
 updateStatus();
-setInterval(updateStatus, 30000); // Update every 30 seconds
+setInterval(updateStatus, 30000);
 
 client.on('messageCreate', async message => {
 
