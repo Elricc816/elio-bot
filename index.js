@@ -84,15 +84,12 @@ client.once('ready', () => {
         client.user.setActivity(`${servers} Servers • ${users} Users`, {
             type: 3 // WATCHING
         });
-    };
-
-    updateStatus();
-    setInterval(updateStatus, 30000); // Updates every 30 seconds
-});
+  
 };
 
 updateStatus();
 setInterval(updateStatus, 30000);
+});
 
 client.on('messageCreate', async message => {
 
