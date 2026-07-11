@@ -72,14 +72,23 @@ for (const folder of commandFolders) {
 }
 
 client.once('ready', () => {
-  console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
+    console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
-  const updateStatus = () => {
-    const status = `${client.guilds.cache.size} Servers • ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`;
+    const updateStatus = () => {
+        const servers = client.guilds.cache.size;
+        const users = client.guilds.cache.reduce(
+            (total, guild) => total + guild.memberCount,
+            0
+        );
 
-    client.user.setActivity(status, {
-        type: 3 // WATCHING
-    });
+        client.user.setActivity(`${servers} Servers • ${users} Users`, {
+            type: 3 // WATCHING
+        });
+    };
+
+    updateStatus();
+    setInterval(updateStatus, 30000); // Updates every 30 seconds
+});
 };
 
 updateStatus();
