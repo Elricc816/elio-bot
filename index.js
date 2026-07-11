@@ -75,39 +75,21 @@ client.once('ready', () => {
   console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
   const statuses = [
-    'Nukes? Not Today.',
-    'Protecting Servers.',
-    ',help | Security for Your Server.',
-    'Built Different',
-    'One Step Ahead',
-    'Powered by Elio Devs </>.',
-    'Keeping Chaos Away',
-    'Security Never Sleeps',
-    'Moderating the Multiverse',
-    'Trust Elio',
-    'Keeping Servers Safe',
-    () => `${client.guilds.cache.size} Servers`,
-    () => `${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`
-  ];
+  () => `${client.guilds.cache.size} Servers • ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`
+];
 
   let i = 0;
 
   const updateStatus = () => {
-    const status =
-      typeof statuses[i] === 'function'
-        ? statuses[i]()
-        : statuses[i];
+    const status = `${client.guilds.cache.size} Servers • ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} Users`;
 
     client.user.setActivity(status, {
-      type: 3
+        type: 3 // WATCHING
     });
+};
 
-    i = (i + 1) % statuses.length;
-  };
-
-  updateStatus();
-  setInterval(updateStatus, 6500);
-});
+updateStatus();
+setInterval(updateStatus, 30000); // Update every 30 seconds
 
 client.on('messageCreate', async message => {
 
