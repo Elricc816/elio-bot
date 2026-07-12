@@ -85,7 +85,7 @@ client.once('ready', () => {
         status: "dnd",
         activities: [
             {
-                name: `${servers} Servers • ${users} Users`,
+                name:`Spreading love in ${servers} Servers and ${users} Users 🌸`,
                 type: 3 // WATCHING
             }
         ]
