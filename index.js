@@ -72,7 +72,7 @@ for (const folder of commandFolders) {
 }
 
 client.once('ready', () => {
-    console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
+    console.log(`🤖 Elara Bot logged in as ${client.user.tag}`);
 
     const updateStatus = () => {
     const servers = client.guilds.cache.size;
