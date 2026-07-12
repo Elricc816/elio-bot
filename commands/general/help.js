@@ -43,9 +43,9 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor('#d3d3d3')
       .setDescription(
-`### Hey , I'm **Elio**
+`### Hii , I'm **Elara**
 
-<:white_arrow:1514714190231769219> **I'm a powerful Discord bot built for moderation, security, automation, and server management. Keep your community safe, organized, and engaging with a wide range of useful features.**
+<:white_arrow:1514714190231769219> **Your gentle server guardian, offering powerful moderation, reliable security, smart automation, and thoughtful utilities for every Discord community.**
 
 <a:BlackDot:1514727923175657654> **Current Prefix:** \`,\`
 <a:BlackDot:1514727923175657654> **Use \`,help <category>\` to view commands.**
@@ -79,17 +79,17 @@ module.exports = {
 <:white_arrow:1514714190231769219> Select a category from the dropdown menu below to view available commands.
 
 **<:info:1514699288674828310>  __Pro Tip__**
-Upgrade to Elio Premium for exclusive features ! <:diamond:1514699495768592635>
+Upgrade to Elara Premium for exclusive features ! <:diamond:1514699495768592635>
 
 **<:link:1514699706788221120>  __Links__**
 [Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/WJGpbAZRWs) <:devv:1514699301144756234>
 
 -# Developed by <@1306606920836055043> <:dev:1514699929199706143>
--# <:heartt:1514699719400755432> Thanks For Using Elio!`
+-# <:heartt:1514699719400755432> Thanks For Using Elara!`
 )
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setImage('https://cdn.discordapp.com/attachments/1514704811394728098/1514922360958881812/file_0000000053d471fa97a1c3a38c25570f.png?ex=6a2d20e4&is=6a2bcf64&hm=3033bdf3f0131eb7b1ece53615f28773b10937cfb762f2d84fc05c781b613f45&')
+      .setImage('https://cdn.discordapp.com/attachments/1525384165242179641/1525875655886110760/6cac377f8fffd40a441b582dbbadbf80.jpg?ex=6a54f9f1&is=6a53a871&hm=a421b07ba7aae50c38b0beab22d951143725ea0c205dd0904457687baf799e58&')
 
       .setFooter({
         text: `Executed by ${message.author.username}`,
