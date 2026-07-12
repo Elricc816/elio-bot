@@ -75,16 +75,21 @@ client.once('ready', () => {
     console.log(`🤖 Elio Bot logged in as ${client.user.tag}`);
 
     const updateStatus = () => {
-        const servers = client.guilds.cache.size;
-        const users = client.guilds.cache.reduce(
-            (total, guild) => total + guild.memberCount,
-            0
-        );
+    const servers = client.guilds.cache.size;
+    const users = client.guilds.cache.reduce(
+        (total, guild) => total + guild.memberCount,
+        0
+    );
 
-        client.user.setActivity(`${servers} Servers • ${users} Users`, {
-            type: 3 // WATCHING
-        });
-  
+    client.user.setPresence({
+        status: "dnd",
+        activities: [
+            {
+                name: `${servers} Servers • ${users} Users`,
+                type: 3 // WATCHING
+            }
+        ]
+    });
 };
 
 updateStatus();
