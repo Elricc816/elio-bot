@@ -82,7 +82,7 @@ module.exports = {
 Upgrade to Elara Premium for exclusive features ! <:diamond:1514699495768592635>
 
 **<:link:1514699706788221120>  __Links__**
-[Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/WJGpbAZRWs) <:devv:1514699301144756234>
+[Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/ZnTDxjc5Zb) <:devv:1514699301144756234>
 
 -# Developed by <@1306606920836055043> <:dev:1514699929199706143>
 -# <:heartt:1514699719400755432> Thanks For Using Elara!`
