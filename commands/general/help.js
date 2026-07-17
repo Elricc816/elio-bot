@@ -89,7 +89,7 @@ Upgrade to Elara Premium for exclusive features ! <:diamond:1514699495768592635>
 )
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setImage('https://cdn.discordapp.com/attachments/1525384165242179641/1525875655886110760/6cac377f8fffd40a441b582dbbadbf80.jpg?ex=6a54f9f1&is=6a53a871&hm=a421b07ba7aae50c38b0beab22d951143725ea0c205dd0904457687baf799e58&')
+      .setImage('https://cdn.discordapp.com/attachments/1511260437469991004/1527740716803952700/6cac377f8fffd40a441b582dbbadbf80.jpg?ex=6a5bc2ea&is=6a5a716a&hm=6ff0bb95b78b8fc117d1e43bd4aa7c4c832d7a57f5beea31a104aae15cf48d68&')
 
       .setFooter({
         text: `Executed by ${message.author.username}`,
