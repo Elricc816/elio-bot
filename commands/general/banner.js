@@ -29,12 +29,8 @@ module.exports = {
             size: 4096
         });
 
-        const serverBanner = member.bannerURL
-            ? member.bannerURL({
-                  dynamic: true,
-                  size: 4096
-              })
-            : null;
+        // Discord doesn't expose server banners.
+        const serverBanner = null;
 
         if (!banner) {
             return message.reply({
@@ -42,13 +38,14 @@ module.exports = {
                     new EmbedBuilder()
                         .setColor("#FF7F7F")
                         .setDescription(
-                            "<:Error:1376511318697316362> | This user does not have a banner."
+                            "<a:spider_cross:1514728338701287640> This user does not have a banner."
                         )
                 ]
             });
         }
 
         function bannerEmbed() {
+
             return new EmbedBuilder()
                 .setColor("#D3D3D3")
                 .setAuthor({
@@ -56,6 +53,15 @@ module.exports = {
                     iconURL: avatar
                 })
                 .setImage(banner)
+                .setDescription(
+`<:member1:1514699741282304061> **User:** ${member}
+
+<:search:1523258723974381580> **Banner Links**
+> [PNG](${user.bannerURL({ extension: "png", size: 4096 })})
+> [JPG](${user.bannerURL({ extension: "jpg", size: 4096 })})
+> [WEBP](${user.bannerURL({ extension: "webp", size: 4096 })})
+> [Banner URL](${banner})`
+                )
                 .setFooter({
                     text: `Requested by ${message.author.username} • Today at ${new Date().toLocaleTimeString([], {
                         hour: "numeric",
@@ -65,6 +71,7 @@ module.exports = {
                         dynamic: true
                     })
                 });
+
         }
 
         const bannerButtons = new ActionRowBuilder().addComponents(
@@ -98,7 +105,7 @@ module.exports = {
                         new EmbedBuilder()
                             .setColor("#FF7F7F")
                             .setDescription(
-                                "<:Error:1376511318697316362> | This interaction isn't yours."
+                                "<a:spider_cross:1514728338701287640> This interaction isn't yours."
                             )
                     ],
                     ephemeral: true
@@ -122,9 +129,7 @@ module.exports = {
 `<:member1:1514699741282304061> **User:** ${member}
 
 <:search:1523258723974381580> **Avatar Links**
-> [PNG](${user.displayAvatarURL({ extension: "png", size: 4096 })})
-> [JPG](${user.displayAvatarURL({ extension: "jpg", size: 4096 })})
-> [WEBP](${user.displayAvatarURL({ extension: "webp", size: 4096 })})
+ [PNG](${user.displayAvatarURL({ extension: "png", size: 4096 })}) | [JPG](${user.displayAvatarURL({ extension: "jpg", size: 4096 })}) | [WEBP](${user.displayAvatarURL({ extension: "webp", size: 4096 })})
 > [Avatar URL](${avatar})`
                     )
                     .setFooter({
@@ -132,9 +137,7 @@ module.exports = {
                             hour: "numeric",
                             minute: "2-digit"
                         })}`,
-                        iconURL: message.author.displayAvatarURL({
-                            dynamic: true
-                        })
+                        iconURL: message.author.displayAvatarURL({ dynamic: true })
                     });
 
                 const row = new ActionRowBuilder().addComponents(
@@ -150,62 +153,23 @@ module.exports = {
                     embeds: [embed],
                     components: [row]
                 });
-
             }
 
-            // =========================
+                 // =========================
             // SERVER BANNER
             // =========================
 
             if (interaction.customId === "serverbanner") {
 
-                if (!serverBanner) {
-                    return interaction.reply({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setColor("#FF7F7F")
-                                .setDescription(
-                                    "<:Error:1376511318697316362> | This user does not have a server banner."
-                                )
-                        ],
-                        ephemeral: true
-                    });
-                }
-
-                const embed = new EmbedBuilder()
-                    .setColor("#D3D3D3")
-                    .setAuthor({
-                        name: `${user.username}'s Server Banner`,
-                        iconURL: avatar
-                    })
-                    .setImage(serverBanner)
-                    .setFooter({
-                        text: `Requested by ${message.author.username} • Today at ${new Date().toLocaleTimeString([], {
-                            hour: "numeric",
-                            minute: "2-digit"
-                        })}`,
-                        iconURL: message.author.displayAvatarURL({
-                            dynamic: true
-                        })
-                    });
-
-        const row = new ActionRowBuilder().addComponents(
-
-                    new ButtonBuilder()
-                        .setCustomId("avatar")
-                        .setLabel("Avatar")
-                        .setStyle(ButtonStyle.Secondary),
-
-                    new ButtonBuilder()
-                        .setCustomId("banner")
-                        .setLabel("Banner")
-                        .setStyle(ButtonStyle.Secondary)
-
-                );
-
-                return interaction.update({
-                    embeds: [embed],
-                    components: [row]
+                return interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("#FF7F7F")
+                            .setDescription(
+                                "<a:spider_cross:1514728338701287640> This user does not have a server banner."
+                            )
+                    ],
+                    ephemeral: true
                 });
 
             }
@@ -215,19 +179,6 @@ module.exports = {
             // =========================
 
             if (interaction.customId === "banner") {
-
-                if (!banner) {
-                    return interaction.reply({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setColor("#FF7F7F")
-                                .setDescription(
-                                    "<:Error:1376511318697316362> | This user does not have a banner."
-                                )
-                        ],
-                        ephemeral: true
-                    });
-                }
 
                 return interaction.update({
                     embeds: [bannerEmbed()],
