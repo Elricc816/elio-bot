@@ -41,7 +41,7 @@ module.exports = {
     const api = Math.round(client.ws.ping);
 
     const embed = new EmbedBuilder()
-      .setColor('#d3d3d3')
+      .setColor('#90EE90')
       .setDescription(
 `### Hii , I'm **Elara**
 
