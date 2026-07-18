@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
     name: "joinedat",
+    aliases: ["joinat"],
 
     async execute(message, args) {
 
@@ -11,17 +12,21 @@ module.exports = {
             message.member;
 
         const embed = new EmbedBuilder()
-            .setColor("#D3D3D3")
-            .setTitle("<:calendar:1514699288674828310> Joined At")
-            .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+            .setColor("#90EE90")
+            .setTitle(`${member.user.username}'s Join Date !`)
+            .setThumbnail(
+                member.user.displayAvatarURL({
+                    dynamic: true,
+                    size: 4096
+                })
+            )
             .setDescription(
-`> **__User__ :** ${member}
-> **__Joined Server__ :** <t:${Math.floor(member.joinedTimestamp / 1000)}:F>
-> **__Joined__ :** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>`
+`<:arrow:1514699753462566953> User joined the server at **__<t:${Math.floor(member.joinedTimestamp / 1000)}:F>__**`
             );
 
         return message.reply({
             embeds: [embed]
         });
+
     }
 };
