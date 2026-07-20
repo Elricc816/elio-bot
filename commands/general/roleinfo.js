@@ -66,23 +66,20 @@ module.exports = {
                 iconURL: message.guild.iconURL({ dynamic: true })
             })
             .setDescription(
-`<:search:1387986025812332564> __General__
-
+`<:search:1523258723974381580> __**General**__
 > **Name :** ${role.name}
 > **ID :** ${role.id}
 > **Color :** ${role.hexColor}
 > **Position :** ${role.position}
 > **Created At :** <t:${Math.floor(role.createdTimestamp / 1000)}:R>
 
-<:mod:1387986036423917569> __Settings__
-
+<:shieldd:1514699103043584121> __**Settings**__
 > **Hoisted :** ${role.hoist ? "Yes" : "No"}
 > **Mentionable :** ${role.mentionable ? "Yes" : "No"}
 > **Managed :** ${role.managed ? "Yes" : "No"}
 > **Members :** ${members}
 
-<:staff:1387986116392779807> __Key Perms__
-
+<:mod1:1514699913919991839> __**Key Perms**__
 > ${keyPerms.join("\n> ")}`
             )
 
