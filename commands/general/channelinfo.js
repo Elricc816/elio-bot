@@ -51,7 +51,7 @@ module.exports = {
                 })
             })
             .setDescription(
-`<:search:1523258723974381580> __General__
+`<:search:1523258723974381580> __**General**__
 > **Name :** ${channel.name}
 > **ID :** ${channel.id}
 > **Mention :** <#${channel.id}>
@@ -60,11 +60,11 @@ module.exports = {
 > **Created At :** <t:${Math.floor(channel.createdTimestamp / 1000)}:R>
 > **Position :** ${channel.position}
 
-<:shieldd:1514699103043584121> __Settings__
+<:shieldd:1514699103043584121> __**Settings**__
 > **NSFW :** ${channel.nsfw ? "Yes" : "No"}
 > **Slowmode :** ${slowmode}
 
-<:info:1514699288674828310> __Topic__
+<:info:1514699288674828310> __**Topic**__
 > ${topic}`
             )
             .setFooter({
