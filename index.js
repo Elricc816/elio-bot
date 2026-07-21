@@ -35,6 +35,7 @@ GatewayIntentBits.GuildPresences
 });
 
 client.commands = new Collection();
+const cooldowns = new Collection();
 
 // =========================
 // EVENT LOADER (ADD THIS)
@@ -316,9 +317,53 @@ const command = client.commands.get(commandName);
 
   if (!command) return;
   
-  try {
-  await command.execute(message, args, client);
+  const cooldown = 5000;
+
+if (!cooldowns.has(command.name)) {
+    cooldowns.set(command.name, new Collection());
+}
+
+const now = Date.now();
+const timestamps = cooldowns.get(command.name);
+
+if (timestamps.has(message.author.id)) {
+
+    const expirationTime = timestamps.get(message.author.id) + cooldown;
+
+    if (now < expirationTime) {
+
+        const timeLeft = ((expirationTime - now) / 1000).toFixed(2);
+
+        const cooldownEmbed = new EmbedBuilder()
+            .setColor("#FF7F7F")
+            .setTitle("You can't use this command!")
+            .setDescription(
+`<:cross:1461876062479712451> You are under cooldown to this command!
+
+<:wickarrow3:1461874588832239733> Cooldown ~ \`${timeLeft} s\``
+            );
+
+        const msg = await message.reply({
+            embeds: [cooldownEmbed]
+        });
+
+        setTimeout(() => {
+            msg.delete().catch(() => {});
+        }, 10000);
+
+        return;
+    }
+}
+
+timestamps.set(message.author.id, now);
+
+setTimeout(() => timestamps.delete(message.author.id), cooldown);
+
+try {
+    await command.execute(message, args, client);
 } catch (err) {
+    console.error(err);
+}
     console.error("PLAY ERROR:", err);
     message.reply("<:WarningIcon:1514708751385497721> Error running command!");
   }
