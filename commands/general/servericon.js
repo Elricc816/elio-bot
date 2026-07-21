@@ -35,20 +35,21 @@ module.exports = {
             });
         }
 
+        const isAnimated = guild.icon?.startsWith("a_");
+
         function iconEmbed() {
+
             return new EmbedBuilder()
                 .setColor("#D3D3D3")
-                const isAnimated = guild.icon?.startsWith("a_");
-
-.setDescription(
+                .setDescription(
 `### 𐙚 ${guild.name}'s Icon
 
 [\`PNG\`](${guild.iconURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.iconURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.iconURL({ extension: "webp", size: 4096 })})${isAnimated ? ` | [\`GIF\`](${guild.iconURL({ extension: "gif", size: 4096 })})` : ""}
 
-> Requested by ${message.author} !!`
-)
-    
+> Requested by ${message.author}`
+                )
                 .setImage(icon);
+
         }
 
         const row = new ActionRowBuilder().addComponents(
@@ -82,7 +83,8 @@ module.exports = {
                     ],
                     ephemeral: true
                 });
-            }if (interaction.customId === "banner") {
+            }
+            if (interaction.customId === "banner") {
 
                 if (!banner) {
                     return interaction.reply({
@@ -97,14 +99,16 @@ module.exports = {
                     });
                 }
 
+                const bannerAnimated = guild.banner?.startsWith("a_");
+
                 const bannerEmbed = new EmbedBuilder()
                     .setColor("#D3D3D3")
                     .setDescription(
 `### 𐙚 ${guild.name}'s Banner
 
-[\`PNG\`](${guild.bannerURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.bannerURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.bannerURL({ extension: "webp", size: 4096 })})
+[\`PNG\`](${guild.bannerURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.bannerURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.bannerURL({ extension: "webp", size: 4096 })})${bannerAnimated ? ` | [\`GIF\`](${guild.bannerURL({ extension: "gif", size: 4096 })})` : ""}
 
--# Requested by ${message.author}`
+> Requested by ${message.author}`
                     )
                     .setImage(banner);
 
@@ -137,14 +141,16 @@ module.exports = {
 
         collector.on("end", async () => {
 
-            const disabled = new ActionRowBuilder().addComponents(
-    ...msg.components[0].components.map(button =>
-        ButtonBuilder.from(button).setDisabled(true)
-    )
-);
+            const disabledRow = new ActionRowBuilder();
+
+            for (const button of msg.components[0].components) {
+                disabledRow.addComponents(
+                    ButtonBuilder.from(button).setDisabled(true)
+                );
+            }
 
             await msg.edit({
-                components: [disabled]
+                components: [disabledRow]
             }).catch(() => {});
 
         });
