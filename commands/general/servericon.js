@@ -42,7 +42,7 @@ module.exports = {
             return new EmbedBuilder()
                 .setColor("#D3D3D3")
                 .setDescription(
-`### 𐙚 ${guild.name}'s Icon
+`###  ${guild.name}'s Icon
 
 [\`PNG\`](${guild.iconURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.iconURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.iconURL({ extension: "webp", size: 4096 })})${isAnimated ? ` | [\`GIF\`](${guild.iconURL({ extension: "gif", size: 4096 })})` : ""}
 
@@ -104,7 +104,7 @@ module.exports = {
                 const bannerEmbed = new EmbedBuilder()
                     .setColor("#D3D3D3")
                     .setDescription(
-`### 𐙚 ${guild.name}'s Banner
+`###  ${guild.name}'s Banner
 
 [\`PNG\`](${guild.bannerURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.bannerURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.bannerURL({ extension: "webp", size: 4096 })})${bannerAnimated ? ` | [\`GIF\`](${guild.bannerURL({ extension: "gif", size: 4096 })})` : ""}
 
