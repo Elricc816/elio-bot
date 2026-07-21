@@ -338,9 +338,9 @@ if (timestamps.has(message.author.id)) {
             .setColor("#FF7F7F")
             .setTitle("You can't use this command!")
             .setDescription(
-`<:cross:1461876062479712451> You are under cooldown to this command!
+`<a:spider_cross:1514728338701287640> You are under cooldown to this command!
 
-<:wickarrow3:1461874588832239733> Cooldown ~ \`${timeLeft} s\``
+<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft} s\``
             );
 
         const msg = await message.reply({
