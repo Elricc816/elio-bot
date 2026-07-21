@@ -38,13 +38,16 @@ module.exports = {
         function iconEmbed() {
             return new EmbedBuilder()
                 .setColor("#D3D3D3")
-                .setDescription(
+                const isAnimated = guild.icon?.startsWith("a_");
+
+.setDescription(
 `### 𐙚 ${guild.name}'s Icon
 
-[\`PNG\`](${guild.iconURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.iconURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.iconURL({ extension: "webp", size: 4096 })})
+[\`PNG\`](${guild.iconURL({ extension: "png", size: 4096 })}) | [\`JPG\`](${guild.iconURL({ extension: "jpg", size: 4096 })}) | [\`WEBP\`](${guild.iconURL({ extension: "webp", size: 4096 })})${isAnimated ? ` | [\`GIF\`](${guild.iconURL({ extension: "gif", size: 4096 })})` : ""}
 
--# Requested by ${message.author}`
-                )
+> Requested by ${message.author} !!`
+)
+    
                 .setImage(icon);
         }
 
