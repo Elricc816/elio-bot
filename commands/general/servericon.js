@@ -134,13 +134,11 @@ module.exports = {
 
         collector.on("end", async () => {
 
-            const disabled = new ActionRowBuilder();
-
-            msg.components[0].components.forEach(btn => {
-                disabled.addComponents(
-                    ButtonBuilder.from(btn).setDisabled(true)
-                );
-            });
+            const disabled = new ActionRowBuilder().addComponents(
+    ...msg.components[0].components.map(button =>
+        ButtonBuilder.from(button).setDisabled(true)
+    )
+);
 
             await msg.edit({
                 components: [disabled]
