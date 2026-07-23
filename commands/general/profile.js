@@ -2,8 +2,7 @@ const {
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle,
-    UserFlagsBitField
+    ButtonStyle
 } = require("discord.js");
 
 module.exports = {
@@ -19,7 +18,7 @@ module.exports = {
 
         const user = member.user;
 
-        await user.fetch(true).catch(() => {});
+        await user.fetch().catch(() => {});
 
         const avatar = user.displayAvatarURL({
             dynamic: true,
@@ -31,42 +30,14 @@ module.exports = {
             size: 4096
         });
 
-        const flags = await user.fetchFlags();
-
-        const badges = [];
-
-        if (flags.has(UserFlagsBitField.Flags.ActiveDeveloper))
-            badges.push("🧑‍💻 Active Developer");
-
-        if (flags.has(UserFlagsBitField.Flags.HypeSquad))
-            badges.push("🎉 HypeSquad");
-
-        if (flags.has(UserFlagsBitField.Flags.HypeSquadOnlineHouse1))
-            badges.push("🏠 Bravery");
-
-        if (flags.has(UserFlagsBitField.Flags.HypeSquadOnlineHouse2))
-            badges.push("🏠 Brilliance");
-
-        if (flags.has(UserFlagsBitField.Flags.HypeSquadOnlineHouse3))
-            badges.push("🏠 Balance");
-
-        if (flags.has(UserFlagsBitField.Flags.BugHunterLevel1))
-            badges.push("🐞 Bug Hunter");
-
-        if (flags.has(UserFlagsBitField.Flags.BugHunterLevel2))
-            badges.push("🐛 Bug Hunter Lv2");
-
-        if (flags.has(UserFlagsBitField.Flags.Staff))
-            badges.push("🛡 Discord Staff");
-
         const roles = member.roles.cache
             .filter(r => r.id !== message.guild.id)
             .sort((a, b) => b.position - a.position)
             .map(r => r.toString())
-            .slice(0, 10)
+            .slice(0, 8)
             .join(", ") || "None";
 
-      const embed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setThumbnail(avatar)
             .setDescription(
@@ -85,14 +56,10 @@ module.exports = {
 <:mod:1387986036423917569> __Server__
 > **Top Role :** ${member.roles.highest}
 > **Boosting :** ${member.premiumSince ? `<t:${Math.floor(member.premiumSinceTimestamp / 1000)}:R>` : "No"}
-> **Roles :** ${roles}
-
-🏅 __Badges__
-> ${badges.length ? badges.join(", ") : "None"}`
+> **Roles :** ${roles}`
             );
 
         const row = new ActionRowBuilder().addComponents(
-
             new ButtonBuilder()
                 .setCustomId("avatar")
                 .setLabel("Avatar")
@@ -102,7 +69,6 @@ module.exports = {
                 .setCustomId("banner")
                 .setLabel("Banner")
                 .setStyle(ButtonStyle.Secondary)
-
         );
 
         const msg = await message.reply({
@@ -114,7 +80,7 @@ module.exports = {
             time: 300000
         });
 
-        collector.on("collect", async interaction => {
+    collector.on("collect", async interaction => {
 
             if (interaction.user.id !== message.author.id) {
                 return interaction.reply({
@@ -129,19 +95,19 @@ module.exports = {
                 });
             }
 
-          if (interaction.customId === "avatar") {
+            if (interaction.customId === "avatar") {
 
-                return interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setColor("#D3D3D3")
-                            .setDescription(
+                const avatarEmbed = new EmbedBuilder()
+                    .setColor("#D3D3D3")
+                    .setDescription(
 `### ${user.username}'s Avatar
 
-> Requested by ${message.author}`
-                            )
-                            .setImage(avatar)
-                    ],
+-# Requested by ${message.author}`
+                    )
+                    .setImage(avatar);
+
+                return interaction.reply({
+                    embeds: [avatarEmbed],
                     ephemeral: true
                 });
 
@@ -162,17 +128,17 @@ module.exports = {
                     });
                 }
 
-                return interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setColor("#D3D3D3")
-                            .setDescription(
+                const bannerEmbed = new EmbedBuilder()
+                    .setColor("#D3D3D3")
+                    .setDescription(
 `### ${user.username}'s Banner
 
-> Requested by ${message.author}`
-                            )
-                            .setImage(banner)
-                    ],
+-# Requested by ${message.author}`
+                    )
+                    .setImage(banner);
+
+                return interaction.reply({
+                    embeds: [bannerEmbed],
                     ephemeral: true
                 });
 
@@ -180,17 +146,17 @@ module.exports = {
 
         });
 
-        collector.on("end", async () => {
+    collector.on("end", async () => {
 
             try {
 
-                const disabledRow = new ActionRowBuilder();
+                const disabledRow = new ActionRowBuilder().addComponents(
 
-                for (const button of msg.components[0].components) {
-                    disabledRow.addComponents(
-                        ButtonBuilder.from(button).setDisabled(true)
-                    );
-                }
+                    ButtonBuilder.from(row.components[0]).setDisabled(true),
+
+                    ButtonBuilder.from(row.components[1]).setDisabled(true)
+
+                );
 
                 await msg.edit({
                     components: [disabledRow]
