@@ -59,8 +59,8 @@ module.exports = {
         if (flags.has(UserFlagsBitField.Flags.Staff))
             badges.push("🛡 Discord Staff");
 
-        if (flags.has(UserFlagsBitField.Flags.VerifiedDeveloper))
-            badges.push("✔ Early Verified Bot Dev");
+        if (flags.has(UserFlagsBitField.Flags.EarlyVerifiedBotDeveloper))
+    badges.push("✔ Early Verified Bot Developer");
 
         const roles = member.roles.cache
             .filter(r => r.id !== message.guild.id)
