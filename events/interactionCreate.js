@@ -1,10 +1,67 @@
+const {
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+    ActionRowBuilder
+} = require("discord.js");
+
+const profileDB = require("../database/profile");
+
 module.exports = (client) => {
 
     client.on("interactionCreate", async (interaction) => {
 
-        if (!interaction.isButton()) return;
+        if (interaction.isButton()) {
 
-        console.log(`Button clicked: ${interaction.customId}`);
+            const fields = {
+                bio: "Bio",
+                birthday: "Birthday",
+                website: "Website",
+                instagram: "Instagram",
+                youtube: "YouTube",
+                theme: "Theme Color",
+                banner: "Banner URL"
+            };
+
+            if (!fields[interaction.customId]) return;
+
+            const modal = new ModalBuilder()
+                .setCustomId(`profile_${interaction.customId}`)
+                .setTitle(`Edit ${fields[interaction.customId]}`);
+
+            const input = new TextInputBuilder()
+                .setCustomId("value")
+                .setLabel(`Enter your ${fields[interaction.customId]}`)
+                .setStyle(
+                    interaction.customId === "bio"
+                        ? TextInputStyle.Paragraph
+                        : TextInputStyle.Short
+                )
+                .setRequired(true);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(input)
+            );
+
+            return interaction.showModal(modal);
+        }
+
+        if (interaction.isModalSubmit()) {
+
+            if (!interaction.customId.startsWith("profile_")) return;
+
+            const field = interaction.customId.replace("profile_", "");
+            const value = interaction.fields.getTextInputValue("value");
+
+            await profileDB.set(interaction.user.id, {
+                [field]: value
+            });
+
+            return interaction.reply({
+                content: `✅ Your **${field}** has been updated!`,
+                ephemeral: true
+            });
+        }
 
     });
 
