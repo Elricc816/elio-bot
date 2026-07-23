@@ -43,17 +43,17 @@ module.exports = {
             .setDescription(
 `## ${user.username}'s Profile
 
-<:search:1387986025812332564> __General__
+<:search:1523258723974381580> __**General**__
 > **Username :** ${user.username}
 > **Display Name :** ${member.displayName}
 > **User ID :** ${user.id}
 > **Bot :** ${user.bot ? "Yes" : "No"}
 
-<:staff:1387986116392779807> __Dates__
+<:bluetick:1523423666585604106> __**Dates**__
 > **Created :** <t:${Math.floor(user.createdTimestamp / 1000)}:R>
 > **Joined :** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>
 
-<:mod:1387986036423917569> __Server__
+<:mod1:1514699913919991839> __**Server**__
 > **Top Role :** ${member.roles.highest}
 > **Boosting :** ${member.premiumSince ? `<t:${Math.floor(member.premiumSinceTimestamp / 1000)}:R>` : "No"}
 > **Roles :** ${roles}`
